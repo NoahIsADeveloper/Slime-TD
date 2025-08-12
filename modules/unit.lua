@@ -25,16 +25,19 @@ local function findEnemyInRange(unit, range)
 end
 
 function Module:update()
-    local enemyInRange = findEnemyInRange(self, self.data.range)
+    local currentData = self.data.upgrades[self.currentUpgrade]
+    local enemyInRange = findEnemyInRange(self, currentData.range)
     if enemyInRange then
         local dx = enemyInRange.element.x - self.element.x
         local dy = enemyInRange.element.y - self.element.y
+
+        ---@diagnostic disable-next-line: deprecated
         local angle = math.atan2(dy, dx)
 
-        if os.clock() - self.data.lastAttack >= self.data.cooldown then
-            enemyInRange:takeDamage(self.data.damage)
-            self.data.lastAttack = os.clock()
-        elseif os.clock() - self.data.lastAttack < self.data.cooldown then
+        if os.clock() - self.lastAttack >= currentData.cooldown then
+            enemyInRange:takeDamage(currentData.damage)
+            self.lastAttack = os.clock()
+        elseif os.clock() - self.lastAttack < currentData.cooldown then
             self.element.rot = angle
         end
     end
@@ -59,12 +62,13 @@ return {
         local data = extra.deepCopy(require(pathModule))
 
         local newUnit = setmetatable({
-            element = RenderModule.new(data.spritePath, 1, x, y),
+            element = RenderModule.new(data.upgrades[1].spritePath, 1, x, y),
             data = data,
             tableIndex = UnitIdCounter
         }, Module)
 
-        newUnit.data.lastAttack = os.clock()
+        newUnit.lastAttack = os.clock()
+        newUnit.currentUpgrade = 1
 
         Units[UnitIdCounter] = newUnit
 
@@ -86,7 +90,7 @@ return {
         local path = "modules/data/units/" .. unitType .. ".lua"
 
         if not love.filesystem.getInfo(path) then return end
-        local data = require(pathModule)
+        local data = require(pathModule).upgrades[1]
         self.currentlyPlacing = true
 
         local x, y = love.mouse.getPosition()

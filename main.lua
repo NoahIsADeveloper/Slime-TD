@@ -21,19 +21,38 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    local x, y = love.mouse.getPosition()
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local scaleX = screenWidth / 800
+    local scaleY = screenHeight / 600
+    local scale = math.min(scaleX, scaleY)
+    local offsetX = (screenWidth - 800 * scale) / 2
+    local offsetY = (screenHeight - 600 * scale) / 2
+
+    local mouseX, mouseY = love.mouse.getPosition()
+    local x = (mouseX - offsetX) / scale
+    local y = (mouseY - offsetY) / scale
 
     if key == "o" then
        print(x, y)
     elseif key == "e" then
-        UnitModule:startPlacement("boxer")
+        UnitModule:startPlacement("handgunner")
     end
 end
 
 function love.mousemoved(x, y)
     if UnitModule.currentlyPlacing then
-        UnitModule.placeholderRange.x, UnitModule.placeholderRange.y = x, y
-        UnitModule.placeholder.x, UnitModule.placeholder.y = x, y
+        local screenWidth, screenHeight = love.graphics.getDimensions()
+        local scaleX = screenWidth / 800
+        local scaleY = screenHeight / 600
+        local scale = math.min(scaleX, scaleY)
+        local offsetX = (screenWidth - 800 * scale) / 2
+        local offsetY = (screenHeight - 600 * scale) / 2
+
+        local gameX = (x - offsetX) / scale
+        local gameY = (y - offsetY) / scale
+
+        UnitModule.placeholderRange.x, UnitModule.placeholderRange.y = gameX, gameY
+        UnitModule.placeholder.x, UnitModule.placeholder.y = gameX, gameY
         UnitModule.canPlace = true
 
         local newW, newH = UnitModule.placeholder.sprite:getWidth(), UnitModule.placeholder.sprite:getHeight()
@@ -43,8 +62,8 @@ function love.mousemoved(x, y)
             local unitW, unitH = unit.element.sprite:getWidth(), unit.element.sprite:getHeight()
             local unitRadius = math.max(unitW, unitH) / 2
 
-            local dx = x - unit.element.x
-            local dy = y - unit.element.y
+            local dx = gameX - unit.element.x
+            local dy = gameY - unit.element.y
             local dist = math.sqrt(dx * dx + dy * dy)
 
             if dist < (newRadius + unitRadius) then
@@ -61,12 +80,12 @@ function love.mousemoved(x, y)
     end
 end
 
-function love.mousepressed(x, y, button)
+function love.mousepressed(_, _, button)
     if not UnitModule.currentlyPlacing then return end
 
     if button == 1 then
         if not UnitModule.canPlace then return end
-        UnitModule.new(UnitModule.placeholderType, x, y)
+        UnitModule.new(UnitModule.placeholderType, UnitModule.placeholder.x, UnitModule.placeholder.y)
     elseif button == 2 then
     else
         return
