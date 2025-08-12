@@ -30,4 +30,19 @@ function Module.lerp(a, b, t)
     return a + (b - a) * t
 end
 
+function Module.getScaledMousePos()
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local scaleX = screenWidth / 800
+    local scaleY = screenHeight / 600
+    local scale = math.min(scaleX, scaleY)
+    local offsetX = (screenWidth - 800 * scale) / 2
+    local offsetY = (screenHeight - 600 * scale) / 2
+
+    local mouseX, mouseY = love.mouse.getPosition()
+    local x = (mouseX - offsetX) / scale
+    local y = (mouseY - offsetY) / scale
+
+    return x, y
+end
+
 return Module

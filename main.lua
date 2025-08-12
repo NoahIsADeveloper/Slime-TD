@@ -6,6 +6,8 @@ local UnitModule = require("modules.unit")
 local MapModule = require("modules.map")
 local extra = require("modules.extra")
 
+local BaseWidth, BaseHeight = 800, 600
+
 function love.load()
     MapModule.load("grasslands")
     EnemyModule.new("slime")
@@ -14,6 +16,13 @@ end
 function love.update(deltaTime)
     EnemyModule.updateAll(deltaTime)
     UnitModule.updateAll(deltaTime)
+
+    if UnitModule.placeholderRange then
+        UnitModule.placeholderRange.rot = UnitModule.placeholderRange.rot + (0.5 * deltaTime)
+
+        local time = os.clock()
+        UnitModule.placeholder.rot = math.sin(time * 4) / 5
+    end
 end
 
 function love.draw()
@@ -21,54 +30,40 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    local screenWidth, screenHeight = love.graphics.getDimensions()
-    local scaleX = screenWidth / 800
-    local scaleY = screenHeight / 600
-    local scale = math.min(scaleX, scaleY)
-    local offsetX = (screenWidth - 800 * scale) / 2
-    local offsetY = (screenHeight - 600 * scale) / 2
-
-    local mouseX, mouseY = love.mouse.getPosition()
-    local x = (mouseX - offsetX) / scale
-    local y = (mouseY - offsetY) / scale
-
     if key == "o" then
-       print(x, y)
+       print(extra.getScaledMousePos())
     elseif key == "e" then
         UnitModule:startPlacement("handgunner")
+    elseif key == "f11" then
+        local fullscreen = love.window.getFullscreen()
+        love.window.setFullscreen(not fullscreen)
     end
 end
 
 function love.mousemoved(x, y)
     if UnitModule.currentlyPlacing then
-        local screenWidth, screenHeight = love.graphics.getDimensions()
-        local scaleX = screenWidth / 800
-        local scaleY = screenHeight / 600
-        local scale = math.min(scaleX, scaleY)
-        local offsetX = (screenWidth - 800 * scale) / 2
-        local offsetY = (screenHeight - 600 * scale) / 2
+        x, y = extra.getScaledMousePos()
 
-        local gameX = (x - offsetX) / scale
-        local gameY = (y - offsetY) / scale
+        if x < 0 or x > 800 or y < 0 or y > 600 then
+            UnitModule.canPlace = false
+        else
+            UnitModule.canPlace = true
+            UnitModule.placeholderRange.x, UnitModule.placeholderRange.y = x, y
+            UnitModule.placeholder.x, UnitModule.placeholder.y = x, y
 
-        UnitModule.placeholderRange.x, UnitModule.placeholderRange.y = gameX, gameY
-        UnitModule.placeholder.x, UnitModule.placeholder.y = gameX, gameY
-        UnitModule.canPlace = true
+            local newW, newH = UnitModule.placeholder.sprite:getWidth(), UnitModule.placeholder.sprite:getHeight()
+            local newRadius = math.max(newW, newH) / 2
 
-        local newW, newH = UnitModule.placeholder.sprite:getWidth(), UnitModule.placeholder.sprite:getHeight()
-        local newRadius = math.max(newW, newH) / 2
-
-        for _, unit in pairs(UnitModule.getUnits()) do
-            local unitW, unitH = unit.element.sprite:getWidth(), unit.element.sprite:getHeight()
-            local unitRadius = math.max(unitW, unitH) / 2
-
-            local dx = gameX - unit.element.x
-            local dy = gameY - unit.element.y
-            local dist = math.sqrt(dx * dx + dy * dy)
-
-            if dist < (newRadius + unitRadius) then
-                UnitModule.canPlace = false
-                break
+            for _, unit in pairs(UnitModule.getUnits()) do
+                local unitW, unitH = unit.element.sprite:getWidth(), unit.element.sprite:getHeight()
+                local unitRadius = math.max(unitW, unitH) / 2
+                local dx = x - unit.element.x
+                local dy = y - unit.element.y
+                local dist = math.sqrt(dx * dx + dy * dy)
+                if dist < (newRadius + unitRadius) then
+                    UnitModule.canPlace = false
+                    break
+                end
             end
         end
 

@@ -67,8 +67,8 @@ return {
             tableIndex = UnitIdCounter
         }, Module)
 
-        newUnit.lastAttack = os.clock()
         newUnit.currentUpgrade = 1
+        newUnit.lastAttack = 0
 
         Units[UnitIdCounter] = newUnit
 
@@ -93,7 +93,7 @@ return {
         local data = require(pathModule).upgrades[1]
         self.currentlyPlacing = true
 
-        local x, y = love.mouse.getPosition()
+        local x, y = extra.getScaledMousePos()
         local scale = data.range / 500
 
         self.placeholderRange = RenderModule.new("assets/sprites/rangevisualizer.png", 99, x, y, .8, nil, 0, scale, scale)
