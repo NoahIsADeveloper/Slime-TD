@@ -23,7 +23,7 @@ return {
         end
 
         if not color then color = {r = 255, g = 255, b = 255} end
-        if not zindex then zindex = 0 end  -- default zindex if not provided
+        if not zindex then zindex = 0 end
 
         ElementIdCounter = ElementIdCounter + 1
         local element = setmetatable({
@@ -87,6 +87,8 @@ return {
     end,
 
     clearAll = function()
-        Elements = {}
+        for _, element in pairs(Elements) do
+            element:remove()
+        end
     end
 }

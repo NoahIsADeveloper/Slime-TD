@@ -1,5 +1,5 @@
 return {
     spritePath = "assets/sprites/enemy_slime.png",
-    maxHealth = 100,
+    maxHealth = 200,
     moveSpeed = 100,
 }

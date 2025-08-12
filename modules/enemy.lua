@@ -1,3 +1,4 @@
+local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
 local MapModule = require("modules.map")
 local extra = require("modules.extra")
@@ -42,7 +43,7 @@ function Module:update(deltaTime)
         self.element.alpha = 1
     end
 
-    local currentMap = MapModule.currentMap
+    local currentMap = CurrentGameData.currentMap
     if not currentMap then self:remove() return end
 
     local waypoints = currentMap.waypoints

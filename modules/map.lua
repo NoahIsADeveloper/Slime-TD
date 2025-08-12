@@ -1,9 +1,7 @@
+local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
-local extra = require("modules.extra")
 
-local Module = {
-    currentMap = nil
-}
+local Module = {}
 
 function Module.load(mapName)
     local mapPath = "modules.data.maps." .. mapName
@@ -18,7 +16,7 @@ function Module.load(mapName)
     local screenWidth, screenHeight = love.graphics.getDimensions()
     RenderModule.new(newMap.spritePath, 0, screenWidth / 2, screenHeight / 2)
 
-    Module.currentMap = newMap
+    CurrentGameData.currentMap = newMap
 end
 
 return Module

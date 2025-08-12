@@ -30,7 +30,7 @@ return {
         },
         [5] = {
             spritePath = "assets/sprites/unit_handgunner_5.png",
-            cooldown = .75,
+            cooldown = .6,
             range = 375,
             damage = 80,
             cost = 3000,

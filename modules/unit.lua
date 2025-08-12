@@ -24,8 +24,34 @@ local function findEnemyInRange(unit, range)
     return nil
 end
 
+function Module:upgrade()
+    if self.currentUpgrade == #self.data.upgrades then return end
+    self.currentUpgrade = self.currentUpgrade + 1
+
+    local currentData = self.data.upgrades[self.currentUpgrade]
+    local oldElement = self.element
+
+    self.element = RenderModule.new(currentData.spritePath, 1, oldElement.x, oldElement.y, oldElement.alpha, oldElement.color, oldElement.rot, oldElement.scaleX, oldElement.scaleY)
+    oldElement:remove()
+end
+
+function Module:isClicked()
+    local mx, my = extra.getScaledMousePos()
+    local sprite = self.element.sprite
+    local x, y = self.element.x, self.element.y
+
+    local width = sprite:getWidth()
+    local height = sprite:getHeight()
+    local halfWidth = width / 2
+    local halfHeight = height / 2
+
+    return mx >= (x - halfWidth) and mx <= (x + halfWidth)
+       and my >= (y - halfHeight) and my <= (y + halfHeight)
+end
+
 function Module:update()
     local currentData = self.data.upgrades[self.currentUpgrade]
+
     local enemyInRange = findEnemyInRange(self, currentData.range)
     if enemyInRange then
         local dx = enemyInRange.element.x - self.element.x
@@ -37,10 +63,14 @@ function Module:update()
         if os.clock() - self.lastAttack >= currentData.cooldown then
             enemyInRange:takeDamage(currentData.damage)
             self.lastAttack = os.clock()
-        elseif os.clock() - self.lastAttack < currentData.cooldown then
             self.element.rot = angle
         end
     end
+end
+
+function Module:remove()
+    if self.element then self.element:remove() end
+    Units[self.tableIndex] = nil
 end
 
 return {
@@ -94,9 +124,9 @@ return {
         self.currentlyPlacing = true
 
         local x, y = extra.getScaledMousePos()
-        local scale = data.range / 500
+        --local scale = data.range / 500
 
-        self.placeholderRange = RenderModule.new("assets/sprites/rangevisualizer.png", 99, x, y, .8, nil, 0, scale, scale)
+        --self.placeholderRange = RenderModule.new("assets/sprites/rangevisualizer.png", 99, x, y, .8, nil, 0, scale, scale)
 
         self.placeholder = RenderModule.new(data.spritePath, 99, x, y, .8)
         self.placeholderType = unitType
@@ -106,5 +136,14 @@ return {
         for _, unit in pairs(Units) do
             unit:update(deltaTime)
         end
+    end,
+
+    clearAll = function(self)
+        for _, unit in pairs(Units) do
+            unit:remove()
+        end
+
+        if self.placeholderRange then self.placeholderRange:remove() end
+        if self.placeholder then self.placeholder:remove() end
     end
 }

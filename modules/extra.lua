@@ -17,15 +17,6 @@ function Module.deepCopy(orig)
     return copy
 end
 
-function Module.sleep(ms)
-    local elapsed = 0
-    while elapsed < ms do
-        local deltaTime = coroutine.yield()
-        if not deltaTime then deltaTime = 0 end
-        elapsed = elapsed + deltaTime * 1000
-    end
-end
-
 function Module.lerp(a, b, t)
     return a + (b - a) * t
 end
