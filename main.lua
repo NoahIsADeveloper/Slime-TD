@@ -42,6 +42,8 @@ function love.load()
 end
 
 function love.update(deltaTime)
+    print(CurrentGameData.cash)
+
     if not CurrentGameData.gameStarted then return end
 
     GameplayLoopModule.update(deltaTime)

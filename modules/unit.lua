@@ -1,3 +1,4 @@
+local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
 local EnemyModule = require("modules.enemy")
 local MapModule = require("modules.map")
@@ -10,22 +11,37 @@ local Module = {}
 Module.__index = Module
 
 local function findEnemyInRange(unit, range)
+    local farthestEnemy = nil
+    local farthestProgress = -math.huge
+
     for _, enemy in pairs(EnemyModule.getEnemies()) do
         if enemy.element and enemy.data.health > 0 then
             local dx = enemy.element.x - unit.element.x
             local dy = enemy.element.y - unit.element.y
             local dist = math.sqrt(dx * dx + dy * dy)
+
             if dist <= range then
-                return enemy
+                local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
+
+                if progress > farthestProgress then
+                    farthestProgress = progress
+                    farthestEnemy = enemy
+                end
             end
         end
     end
 
-    return nil
+    return farthestEnemy
 end
 
 function Module:upgrade()
     if self.currentUpgrade == #self.data.upgrades then return end
+
+    local nextData = self.data.upgrades[self.currentUpgrade + 1]
+    if CurrentGameData.cash < nextData.cost then return end
+
+    CurrentGameData.cash = CurrentGameData.cash - nextData.cost
+
     self.currentUpgrade = self.currentUpgrade + 1
 
     local currentData = self.data.upgrades[self.currentUpgrade]
@@ -61,6 +77,8 @@ function Module:update()
         local angle = math.atan2(dy, dx)
 
         if os.clock() - self.lastAttack >= currentData.cooldown then
+            CurrentGameData.cash = CurrentGameData.cash + 1
+
             enemyInRange:takeDamage(currentData.damage)
             self.lastAttack = os.clock()
             self.element.rot = angle
@@ -88,8 +106,12 @@ return {
 
         if not love.filesystem.getInfo(path) then return end
 
-        UnitIdCounter = UnitIdCounter + 1
         local data = extra.deepCopy(require(pathModule))
+        if CurrentGameData.cash < data.upgrades[1].cost then return end
+
+        CurrentGameData.cash = CurrentGameData.cash - data.upgrades[1].cost
+
+        UnitIdCounter = UnitIdCounter + 1
 
         local newUnit = setmetatable({
             element = RenderModule.new(data.upgrades[1].spritePath, 1, x, y),

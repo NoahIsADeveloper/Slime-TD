@@ -37,7 +37,7 @@ function Module.startGame(difficulty)
     MapModule.load("grasslands")
 
     waveCoroutine = coroutine.create(function()
-        for _, wave in ipairs(CurrentGameData.waves) do
+        for index, wave in ipairs(CurrentGameData.waves) do
             for _, enemyGroup in ipairs(wave.enemies) do
                 for _ = 1, enemyGroup.count do
                     EnemyModule.new(enemyGroup.type)
@@ -48,6 +48,8 @@ function Module.startGame(difficulty)
             while next(EnemyModule.getEnemies()) do
                 waitSeconds(0.1)
             end
+
+            CurrentGameData.cash = CurrentGameData.cash + (index * 200)
         end
 
         CurrentGameData.gameWon = true
