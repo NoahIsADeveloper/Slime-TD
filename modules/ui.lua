@@ -101,7 +101,7 @@ function Module.mousepressed(mouseButton)
         end
 
         if Module.currentlySelectedUnit and not clicked then
-            Module.rangeVisualizer:remove()
+            if Module.rangeVisualizer then Module.rangeVisualizer:remove() end
             Module.rangeVisualizer = nil
             Module.currentlySelectedUnit = nil
         end

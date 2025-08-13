@@ -16,7 +16,10 @@ local function waitSeconds(seconds, updateWaveTimer)
         if not dt then dt = 0 end
 
         timer = timer + dt
-        if updateWaveTimer then CurrentGameData.waveTimer = math.max(0, math.ceil(seconds - timer)) end
+
+        if updateWaveTimer then
+            CurrentGameData.waveTimer = math.max(0, math.ceil(seconds - timer))
+        end
     end
 
     if updateWaveTimer then CurrentGameData.waveTimer = nil end

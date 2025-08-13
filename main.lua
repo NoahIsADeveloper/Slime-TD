@@ -10,7 +10,7 @@ local extra = require("modules.extra")
 
 function love.load()
     local imageData = love.image.newImageData("assets/sprites/cursor.png")
-    local cursor = love.mouse.newCursor(imageData, 20, 20)
+    local cursor = love.mouse.newCursor(imageData, 5, 5)
     love.mouse.setCursor(cursor)
 
     love.graphics.setFont(love.graphics.newFont("assets/PixelOperator-Bold.ttf", 24))

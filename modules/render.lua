@@ -38,31 +38,6 @@ return {
             zindex = zindex or 0,
             tableIndex = ElementIdCounter,
             color = {r = color.r or 255, g = color.g or 255, b = color.b or 255},
-            isText = false
-        }, Module)
-
-        Elements[ElementIdCounter] = element
-        return element
-    end,
-
-    newText = function(text, font, zindex, x, y, alpha, color, rot, scale)
-        if not color then color = {r = 255, g = 255, b = 255} end
-        if not zindex then zindex = 0 end
-        scale = scale or 1
-
-        ElementIdCounter = ElementIdCounter + 1
-        local element = setmetatable({
-            text = text or "",
-            font = font or love.graphics.getFont(),
-            x = x or 0,
-            y = y or 0,
-            alpha = alpha or 1,
-            rot = rot or 0,
-            scale = scale,
-            zindex = zindex,
-            tableIndex = ElementIdCounter,
-            color = {r = color.r or 255, g = color.g or 255, b = color.b or 255},
-            isText = true
         }, Module)
 
         Elements[ElementIdCounter] = element
@@ -95,32 +70,19 @@ return {
         for _, element in ipairs(sortedElements) do
             love.graphics.setColor(element.color.r, element.color.g, element.color.b, element.alpha)
 
-            if element.isText then
-                love.graphics.setFont(element.font)
-                local textWidth = element.font:getWidth(element.text)
-                local textHeight = element.font:getHeight(element.text)
-                love.graphics.print(
-                    element.text,
-                    (element.x - textWidth / 2) * scale + offsetX,
-                    element.y * scale + offsetY,
-                    element.rot,
-                    element.scale * scale,
-                    element.scale * scale
-                )
-            else
-                local ox = element.sprite:getWidth() / 2
-                local oy = element.sprite:getHeight() / 2
-                love.graphics.draw(
-                    element.sprite,
-                    element.x * scale + offsetX,
-                    element.y * scale + offsetY,
-                    element.rot,
-                    element.scaleX * scale,
-                    element.scaleY * scale,
-                    ox,
-                    oy
-                )
-            end
+            local ox = element.sprite:getWidth() / 2
+            local oy = element.sprite:getHeight() / 2
+
+            love.graphics.draw(
+                element.sprite,
+                element.x * scale + offsetX,
+                element.y * scale + offsetY,
+                element.rot,
+                element.scaleX * scale,
+                element.scaleY * scale,
+                ox,
+                oy
+            )
 
             love.graphics.setColor(1, 1, 1, 1)
         end
