@@ -29,6 +29,7 @@ end
 
 function love.draw()
     RenderModule.drawAll()
+    love.graphics.print("$" .. CurrentGameData.cash .. " | " .. CurrentGameData.baseHealth .. "/" .. CurrentGameData.maxBaseHealth .. " HP") --%note temporary
 end
 
 function love.keypressed(key)

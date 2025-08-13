@@ -12,19 +12,8 @@ local Module = {
         placeholder = nil
     },
 
-    UI = {
-        baseHealthBar = nil,
-
-        informationText = nil,
-        baseHealthText = nil,
-        cashText = nil,
-
-        upgradeMenu = {
-            currentlySelected = nil
-        }
-    },
-
-    rangeVisualizer = nil,
+    currentlySelectedUnit = nil,
+    rangeVisualizer = nil
 }
 
 local UnitPlacementData = Module.UnitPlacementData
@@ -84,21 +73,25 @@ function Module.startPlacement(unitType)
     }
 end
 
-function Module.mousepressed(button)
-    if button == 1 and not UnitPlacementData.currentlyPlacing then
+function Module.mousepressed(mouseButton)
+    if mouseButton == 1 and not UnitPlacementData.currentlyPlacing then
+        local clicked = false
+
         for _, unit in pairs(UnitModule.getUnits()) do
             if unit:isClicked() then
+                clicked = true
+
                 if Module.rangeVisualizer then
                     Module.rangeVisualizer:remove()
                     Module.rangeVisualizer = nil
 
-                    if Module.UI.upgradeMenu.currentlySelected == unit then
-                        Module.UI.upgradeMenu.currentlySelected = nil
+                    if Module.currentlySelectedUnit == unit then
+                        Module.currentlySelectedUnit = nil
                         return
                     end
                 end
 
-                Module.UI.upgradeMenu.currentlySelected = unit
+                Module.currentlySelectedUnit = unit
 
                 local currentData = unit.data.upgrades[unit.currentUpgrade]
 
@@ -106,14 +99,20 @@ function Module.mousepressed(button)
                 Module.rangeVisualizer = RenderModule.new("assets/sprites/rangevisualizer.png", 1, unit.element.x, unit.element.y, .8, nil, 0, scale, scale)
             end
         end
+
+        if Module.currentlySelectedUnit and not clicked then
+            Module.rangeVisualizer:remove()
+            Module.rangeVisualizer = nil
+            Module.currentlySelectedUnit = nil
+        end
     end
 
     if UnitPlacementData.currentlyPlacing and CurrentGameData.gameStarted then
-        if button == 1 then
+        if mouseButton == 1 then
             if not UnitPlacementData.canPlace then return end
             UnitModule.new(UnitPlacementData.placeholder.type, UnitPlacementData.placeholder.element.x, UnitPlacementData.placeholder.element.y)
 
-        elseif button == 2 then
+        elseif mouseButton == 2 then
         else
             return
         end
@@ -130,27 +129,6 @@ end
 
 function Module.update(deltaTime)
     local time = os.clock()
-
-    if CurrentGameData.gameStarted then
-        if not Module.UI.informationText then Module.UI.informationText = RenderModule.newText("", love.graphics.getFont(), 100, 400, 50, 1, {r=255,g=255,b=255}) end
-        if not Module.UI.baseHealthText then Module.UI.baseHealthText = RenderModule.newText("", love.graphics.getFont(), 101, 400, 20, 1, {r=255,g=255,b=255}) end
-        if not Module.UI.cashText then Module.UI.cashText = RenderModule.newText("", love.graphics.getFont(), 100, 100, 550, 1, {r=255,g=192,b=0}) end
-
-        Module.UI.baseHealthText.text = CurrentGameData.baseHealth .. "/" .. CurrentGameData.maxBaseHealth
-        Module.UI.cashText.text = "$" .. CurrentGameData.cash
-    end
-
-    if CurrentGameData.waveTimer and CurrentGameData.waveTimer > 0 then
-        Module.UI.informationText.text = "Wave Incoming! (" .. math.ceil(CurrentGameData.waveTimer) .. "s)"
-    elseif CurrentGameData.gameStarted then
-        local count = 0
-
-        for _, _ in pairs(EnemyModule.getEnemies()) do
-            count = count + 1
-        end
-
-        Module.UI.informationText.text = "Slimes Alive: " .. count
-    end
 
     if Module.rangeVisualizer then
         Module.rangeVisualizer.rot = Module.rangeVisualizer.rot + (0.5 * deltaTime)

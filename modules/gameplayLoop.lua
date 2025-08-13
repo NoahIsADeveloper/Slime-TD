@@ -37,8 +37,8 @@ function Module.startGame(difficulty, map)
     CurrentGameData.gameWon = false
     CurrentGameData.waveTimer = nil
 
-    CurrentGameData.maxBaseHealth = 1000
-    CurrentGameData.baseHealth = 1000
+    CurrentGameData.maxBaseHealth = 1500
+    CurrentGameData.baseHealth = CurrentGameData.maxBaseHealth
     CurrentGameData.currentWave = 0
     CurrentGameData.cash = 800
 
