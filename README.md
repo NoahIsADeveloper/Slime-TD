@@ -1,6 +1,3 @@
-# Slime Tower Defense
-A **tower defense game** created in **LOVE2D** where you defend your base against waves of slimes.
-
 ## Features
 - Basic Wave Layout
 - Basic Tower System
