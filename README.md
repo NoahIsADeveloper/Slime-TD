@@ -10,5 +10,4 @@ A **tower defense game** created in **LOVE2D** where you defend your base agains
 - Main Menu
 - Settings
 
- **License:** MIT  
 You are free to use, modify, and redistribute this game under the terms of the [MIT License](https://opensource.org/licenses/MIT).
