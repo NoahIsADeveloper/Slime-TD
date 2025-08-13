@@ -89,6 +89,7 @@ end
 function Module:remove()
     if self.element then self.element:remove() end
     Units[self.tableIndex] = nil
+    self = nil
 end
 
 return {
@@ -133,25 +134,6 @@ return {
 
     getUnits = function()
         return Units
-    end,
-
-    startPlacement = function(self, unitType)
-        if self.currentlyPlacing then return end
-
-        local pathModule = "modules.data.units." .. unitType
-        local path = "modules/data/units/" .. unitType .. ".lua"
-
-        if not love.filesystem.getInfo(path) then return end
-        local data = require(pathModule).upgrades[1]
-        self.currentlyPlacing = true
-
-        local x, y = extra.getScaledMousePos()
-        --local scale = data.range / 500
-
-        --self.placeholderRange = RenderModule.new("assets/sprites/rangevisualizer.png", 99, x, y, .8, nil, 0, scale, scale)
-
-        self.placeholder = RenderModule.new(data.spritePath, 99, x, y, .8)
-        self.placeholderType = unitType
     end,
 
     updateAll = function(deltaTime)

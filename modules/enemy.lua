@@ -1,6 +1,5 @@
 local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
-local MapModule = require("modules.map")
 local extra = require("modules.extra")
 
 local Enemies = {}
@@ -101,7 +100,9 @@ function Module:update(deltaTime)
         self.data.currentWaypoint = i + 1
 
         if self.data.currentWaypoint >= #waypoints then
+            CurrentGameData.baseHealth = CurrentGameData.baseHealth - self.data.health
             self:remove()
+
             return
         end
 
@@ -121,8 +122,13 @@ function Module:update(deltaTime)
 end
 
 function Module:remove()
-     if self.element then self.element:remove() end
+    if CurrentGameData.gameStarted and self.data.health <= 0 then
+        CurrentGameData.cash = CurrentGameData.cash + self.data.killReward
+    end
+
+    if self.element then self.element:remove() end
     Enemies[self.tableIndex] = nil
+    self = nil
 end
 
 return {
