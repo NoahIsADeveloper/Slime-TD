@@ -11,7 +11,6 @@ A **tower defense game** created in **LOVE2D** where you defend your base agains
 - Main Menu
 - Settings
 - Shop
-
-<hr style="height:2px; background-color:black; border:none;">
+  
 
 You are free to use, modify, and redistribute this game under the terms of the [MIT License](https://opensource.org/licenses/MIT).
