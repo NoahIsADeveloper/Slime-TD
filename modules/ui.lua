@@ -27,6 +27,21 @@ function Module.checkCanPlace()
     end
 
     local px, py = UnitPlacementData.placeholder.element.x, UnitPlacementData.placeholder.element.y
+    local pathMask = CurrentGameData.currentMapPathMask
+
+    ---@diagnostic disable-next-line: undefined-field, need-check-nil
+    if px < 0 or py < 0 or px >= pathMask:getWidth() or py >= pathMask:getHeight() then
+        return false
+    end
+
+    ---@diagnostic disable-next-line: need-check-nil, undefined-field
+    local r = pathMask:getPixel(px, py)
+
+    if r == 1 then
+        UnitPlacementData.canPlace = false
+        return
+    end
+
     local psx = UnitPlacementData.placeholder.element.scaleX or 1
     local psy = UnitPlacementData.placeholder.element.scaleY or 1
     local psw = UnitPlacementData.placeholder.element.sprite:getWidth() * psx

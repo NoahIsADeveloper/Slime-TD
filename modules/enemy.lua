@@ -118,7 +118,7 @@ function Module:update(deltaTime)
     self.element.y = y
 
     local time = os.clock()
-    self.element.rot = math.sin(time * (self.data.moveSpeed / 25)) / 5
+    self.element.rot = math.sin(time * (self.data.moveSpeed / 25 + self.randomOffset)) / 5
 end
 
 function Module:remove()
@@ -144,7 +144,8 @@ return {
         local newEnemy = setmetatable({
             element = RenderModule.new(data.spritePath, 2),
             data = data,
-            tableIndex = EnemyIdCounter
+            tableIndex = EnemyIdCounter,
+            randomOffset = math.random(-1000, 1000) / 1000
         }, Module)
 
         newEnemy.data.health = newEnemy.data.maxHealth
