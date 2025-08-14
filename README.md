@@ -12,7 +12,7 @@ https://shibathedeveloper.itch.io/slime-td
 2. Install [LOVE2D](https://www.love2d.org/)  
 3. Install these VSC extensions:  
    - [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua)  
-   - [LOVE2D Support](https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d)  
+   - [LOVE2D Support](https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d)
 
 ## How to Playtest
 - Press `ALT + L` while in any `.lua` file; LOVE2D Support will run the game.  
