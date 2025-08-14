@@ -23,7 +23,10 @@ local Module = {
         state = "none",
         speed = 2,
         callback = nil
-    }
+    },
+
+    splashScreenComplete = false,
+    splashTime = 0
 }
 
 local UnitPlacementData = Module.UnitPlacementData
@@ -195,6 +198,10 @@ function Module.startPlacement(unitType)
 end
 
 function Module.mousepressed(mouseButton)
+    if mouseButton == 1 and not Module.splashScreenComplete then
+        Module.splashTime = 99
+    end
+
     if Module.CurrentScene == "mainmenu" then
         if Module.CurrentSceneData.playButton:isClicked() then
             require("modules.gameplayLoop").startGame("normal", "grasslands")
@@ -271,6 +278,14 @@ end
 
 function Module.update(deltaTime)
     local time = os.clock()
+
+    if not Module.splashScreenComplete then
+        Module.splashTime = Module.splashTime + deltaTime
+        if Module.splashTime >= 4 then
+            Module.loadScene("mainmenu", true)
+            Module.splashScreenComplete = true
+        end
+    end
 
     if Module.fade.state ~= "none" then
         if Module.fade.state == "in" then
