@@ -4,6 +4,7 @@
 </p>
 
 ## Special Credits
+Sound Effects https://freesound.org/
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas
 
 ## Official Links
