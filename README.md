@@ -13,7 +13,7 @@ IF THAT DOESN'T WORK: <br>
 Go to the extension settings, and change path to the LOVE2D executable <br>
 
 IF ABOVE DOESN'T WORK EITHER: <br> 
-doesn't work, find your LOVE2D executable or a shortcut to it, then drag the project folder into it.
+Find your LOVE2D executable or a shortcut to it, then drag the project folder into it.
 
 ## OFFICIAL LINKS
 https://shibathedeveloper.itch.io/slime-td
