@@ -11,10 +11,15 @@ function Module.load(mapName)
     if not newMap.waypoints then return end
     if not newMap.spritePath then return end
 
-    RenderModule.clearAll()
+    local elementProperties = {
+            type = "sprite",
+            spritePath = newMap.spritePath,
+            zindex = 0,
+            x = 400,
+            y = 300
+        }
 
-    local screenWidth, screenHeight = love.graphics.getDimensions()
-    RenderModule.new(newMap.spritePath, 0, screenWidth / 2, screenHeight / 2)
+    RenderModule.new(elementProperties)
 
     CurrentGameData.currentMapMask = love.image.newImageData(newMap.mask)
     CurrentGameData.currentMap = newMap
