@@ -3,7 +3,7 @@
 A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 
 ## Official Links
-Play the game here: [Slime TD on itch.io](https://shibathedeveloper.itch.io/slime-td)
+https://shibathedeveloper.itch.io/slime-td
 
 ## Development Setup (Windows Only)
 **Note:** If you just want to play the game, use the official links above.  
