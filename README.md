@@ -22,7 +22,7 @@ https://shibathedeveloper.itch.io/slime-td
 ## How to Build
 1. Create a folder on your desktop.  
 2. Create a `.zip` file in that folder.  
-3. Copy all game files into the `.zip` file.  
+3. Copy all game files into the `.zip` file. (Excluding .github .git .vscode)
 4. Rename the `.zip` file to `.love`.  
 5. Name the `.love` file whatever you want (e.g., `SlimeTD.love`).  
 6. Copy `love.exe` into the same folder.  
