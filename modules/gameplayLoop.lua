@@ -35,7 +35,7 @@ function Module.startGame(difficulty, map)
 
     if not love.filesystem.getInfo(path) then return end
 
-    UIModule.loadScene("ingame")
+    UIModule.loadScene("ingame", true)
 
     local difficultyData = require(modulePath)
     CurrentGameData.waves = difficultyData.waves or {}
@@ -102,7 +102,7 @@ function Module.stopGame()
 
     waveCoroutine = nil
 
-    UIModule.loadScene("resultscreen")
+    UIModule.loadScene("resultscreen", false)
 end
 
 return Module

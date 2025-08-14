@@ -40,7 +40,7 @@ function Module.startFadeOut(callback)
     Module.transitionElement.alpha = 1
 end
 
-function Module.loadScene(scene)
+function Module.loadScene(scene, animate)
     local function actuallyLoadScene()
         local pathModule = "modules.data.ui-scenes." .. scene
         local path = "modules/data/ui-scenes/" .. scene .. ".lua"
@@ -61,39 +61,48 @@ function Module.loadScene(scene)
 
     if Module.transitionElement then Module.transitionElement:remove() end
 
-    Module.transitionElement = RenderModule.new({
-        type = "sprite",
-        spritePath = "assets/sprites/background.png",
-        color = {r=0, g=0, b=0},
-        scaleX = 1,
-        scaleY = 1,
-        zindex = 1000,
-        alpha = 0,
-        x = 400,
-        y = 300
-    })
+    if animate then
+        Module.transitionElement = RenderModule.new({
+            type = "sprite",
+            spritePath = "assets/sprites/background.png",
+            color = {r=0, g=0, b=0},
+            scaleX = 1,
+            scaleY = 1,
+            zindex = 1000,
+            alpha = 0,
+            x = 400,
+            y = 300
+        })
 
-    Module.startFadeIn(function()
-        local delay = 0.25
-        local elapsed = 0
-        local timerUpdate
+        Module.startFadeIn(function()
+            local delay = 0.25
+            local elapsed = 0
+            local timerUpdate
 
-        timerUpdate = function(dt)
-            elapsed = elapsed + dt
-            if elapsed >= delay then
-                actuallyLoadScene()
-                Module.startFadeOut(nil)
+            timerUpdate = function(dt)
+                elapsed = elapsed + dt
+                if elapsed >= delay then
+                    actuallyLoadScene()
+                    Module.startFadeOut(nil)
 
-                Module.update = (function(original) return function(dt) original(dt); timerUpdate = nil end end)(Module.update)
+                    Module.update = (function(original)
+                        return function(dt)
+                            original(dt)
+                            timerUpdate = nil
+                        end
+                    end)(Module.update)
+                end
             end
-        end
 
-        local originalUpdate = Module.update
-        Module.update = function(dt)
-            originalUpdate(dt)
-            if timerUpdate then timerUpdate(dt) end
-        end
-    end)
+            local originalUpdate = Module.update
+            Module.update = function(dt)
+                originalUpdate(dt)
+                if timerUpdate then timerUpdate(dt) end
+            end
+        end)
+    else
+        actuallyLoadScene()
+    end
 end
 
 function Module.checkCanPlace()

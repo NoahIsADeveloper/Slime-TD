@@ -20,14 +20,14 @@ function love.load()
     font:setFilter("nearest", "nearest")
     love.graphics.setFont(font)
 
-    UIModule.loadScene("splashscreen")
+    UIModule.loadScene("splashscreen", true)
 end
 
 function love.update(deltaTime)
     if not switched then
         splashTime = splashTime + deltaTime
         if splashTime >= 4 then
-            UIModule.loadScene("mainmenu")
+            UIModule.loadScene("mainmenu", true)
             switched = true
         end
     end
