@@ -1,4 +1,9 @@
+## OFFICIAL LINKS
+https://shibathedeveloper.itch.io/slime-td
+
 ## SETUP
+IF YOU JUST WANT TO PLAY THE GAME, USE THE OFFICIAL LINKS ABOVE
+
 Download Visual Studio Code: https://code.visualstudio.com/download <br>
 Download LOVE2D: https://www.love2d.org/ <br>
 
@@ -14,6 +19,3 @@ Go to the extension settings, and change path to the LOVE2D executable <br>
 
 IF ABOVE DOESN'T WORK EITHER: <br> 
 Find your LOVE2D executable or a shortcut to it, then drag the project folder into it.
-
-## OFFICIAL LINKS
-https://shibathedeveloper.itch.io/slime-td
