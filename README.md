@@ -4,7 +4,7 @@
 </p>
 
 ## Special Credits
-Font: Pixel Operator (Bold) - Jayvee Enaguas
+Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas
 
 ## Official Links
 https://shibathedeveloper.itch.io/slime-td
