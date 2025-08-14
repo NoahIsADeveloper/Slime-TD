@@ -1,6 +1,5 @@
 ![Slime TD Logo](assets/sprites/logo.png)
 
-# Slime TD
 A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 
 ## Official Links
