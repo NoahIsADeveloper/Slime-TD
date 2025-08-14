@@ -199,8 +199,10 @@ end
 
 function Module.mousepressed(mouseButton)
     if mouseButton == 1 and not Module.splashScreenComplete then
-        Module.splashTime = 99
+        Module.splashScreenComplete = true
+        Module.loadScene("mainmenu", true)
     end
+
 
     if Module.CurrentScene == "mainmenu" then
         if Module.CurrentSceneData.playButton:isClicked() then
