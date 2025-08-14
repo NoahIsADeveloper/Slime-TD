@@ -8,6 +8,9 @@ local UnitModule = require("modules.unit")
 local UIModule = require("modules.ui")
 local extra = require("modules.extra")
 
+local splashTime = 0
+local switched = false
+
 function love.load()
     local imageData = love.image.newImageData("assets/sprites/cursor.png")
     local cursor = love.mouse.newCursor(imageData, 5, 5)
@@ -15,14 +18,20 @@ function love.load()
 
     local font = love.graphics.newFont("assets/PixelOperator-Bold.ttf", 50)
     font:setFilter("nearest", "nearest")
-
     love.graphics.setFont(font)
 
-    UIModule.loadScene("mainmenu")
-    --GameplayLoopModule.startGame("normal", "grasslands")
+    UIModule.loadScene("splashscreen")
 end
 
 function love.update(deltaTime)
+    if not switched then
+        splashTime = splashTime + deltaTime
+        if splashTime >= 4 then
+            UIModule.loadScene("mainmenu")
+            switched = true
+        end
+    end
+
     UIModule.update(deltaTime)
 
     if not CurrentGameData.gameStarted then return end

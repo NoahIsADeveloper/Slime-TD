@@ -16,29 +16,84 @@ local Module = {
     CurrentScene = "",
 
     currentlySelectedUnit = nil,
-    rangeVisualizer = nil
+    rangeVisualizer = nil,
+
+    transitionElement = nil,
+    fade = {
+        state = "none",
+        speed = 2,
+        callback = nil
+    }
 }
 
 local UnitPlacementData = Module.UnitPlacementData
 
+function Module.startFadeIn(callback)
+    Module.fade.state = "in"
+    Module.fade.callback = callback
+    Module.transitionElement.alpha = 0
+end
+
+function Module.startFadeOut(callback)
+    Module.fade.state = "out"
+    Module.fade.callback = callback
+    Module.transitionElement.alpha = 1
+end
+
 function Module.loadScene(scene)
-    local pathModule = "modules.data.ui-scenes." .. scene
-    local path = "modules/data/ui-scenes/" .. scene .. ".lua"
+    local function actuallyLoadScene()
+        local pathModule = "modules.data.ui-scenes." .. scene
+        local path = "modules/data/ui-scenes/" .. scene .. ".lua"
+        if not love.filesystem.getInfo(path) then return end
 
-    if not love.filesystem.getInfo(path) then return end
+        for _, element in pairs(Module.CurrentSceneData) do
+            element:remove()
+        end
 
-    local sceneData = require(pathModule)
+        Module.CurrentSceneData = {}
+        Module.CurrentScene = scene
 
-    for _, element in pairs(Module.CurrentSceneData) do
-        element:remove()
+        local sceneData = require(pathModule)
+        for index, elementProperties in pairs(sceneData) do
+            Module.CurrentSceneData[index] = RenderModule.new(elementProperties)
+        end
     end
 
-    Module.CurrentSceneData = {}
-    Module.CurrentScene = scene
+    if Module.transitionElement then Module.transitionElement:remove() end
 
-    for index, elementProperties in pairs(sceneData) do
-        Module.CurrentSceneData[index] = RenderModule.new(elementProperties)
-    end
+    Module.transitionElement = RenderModule.new({
+        type = "sprite",
+        spritePath = "assets/sprites/background.png",
+        color = {r=0, g=0, b=0},
+        scaleX = 1,
+        scaleY = 1,
+        zindex = 1000,
+        alpha = 0,
+        x = 400,
+        y = 300
+    })
+
+    Module.startFadeIn(function()
+        local delay = 0.25
+        local elapsed = 0
+        local timerUpdate
+
+        timerUpdate = function(dt)
+            elapsed = elapsed + dt
+            if elapsed >= delay then
+                actuallyLoadScene()
+                Module.startFadeOut(nil)
+
+                Module.update = (function(original) return function(dt) original(dt); timerUpdate = nil end end)(Module.update)
+            end
+        end
+
+        local originalUpdate = Module.update
+        Module.update = function(dt)
+            originalUpdate(dt)
+            if timerUpdate then timerUpdate(dt) end
+        end
+    end)
 end
 
 function Module.checkCanPlace()
@@ -120,7 +175,7 @@ function Module.startPlacement(unitType)
         zindex = 99,
         x = x,
         y = y,
-        alpha = .8,
+        alpha = .7,
     }
 
     UnitPlacementData.placeholder = {
@@ -208,20 +263,33 @@ end
 function Module.update(deltaTime)
     local time = os.clock()
 
-    if CurrentGameData.gameStarted then
-        Module.CurrentSceneData.baseHealth.text =  math.max(CurrentGameData.baseHealth, 0) .. "/" .. CurrentGameData.maxBaseHealth .. " BASE HP"
-
-        if CurrentGameData.baseHealth <= 0 then
-            Module.CurrentSceneData.baseHealth.color = {r=255, g=58, b=58}
-        elseif CurrentGameData.baseHealth < CurrentGameData.maxBaseHealth then
-            Module.CurrentSceneData.baseHealth.color = {r=255, g=150, b=50}
-        else
-            Module.CurrentSceneData.baseHealth.color = {r=107, g=255, b=0107}
+    if Module.fade.state ~= "none" then
+        if Module.fade.state == "in" then
+            Module.transitionElement.alpha = math.min(Module.transitionElement.alpha + Module.fade.speed * deltaTime, 1)
+            if Module.transitionElement.alpha >= 1 then
+                Module.fade.state = "none"
+                if Module.fade.callback then Module.fade.callback() end
+            end
+        elseif Module.fade.state == "out" then
+            Module.transitionElement.alpha = math.max(Module.transitionElement.alpha - Module.fade.speed * deltaTime, 0)
+            if Module.transitionElement.alpha <= 0 then
+                Module.fade.state = "none"
+                if Module.fade.callback then Module.fade.callback() end
+            end
         end
+    end
+
+    if CurrentGameData.gameStarted and Module.CurrentScene == "ingame" then
+        Module.CurrentSceneData.baseHealth.text =  math.max(CurrentGameData.baseHealth, 0) .. "/" .. CurrentGameData.maxBaseHealth .. " BASE HP"
+        Module.CurrentSceneData.baseHealth.rot = math.sin(time) / 35
+
+        Module.CurrentSceneData.baseHealth.color = {r=107, g=255, b=107}
 
         Module.CurrentSceneData.cashCounter.text = "$" .. CurrentGameData.cash
+        Module.CurrentSceneData.cashCounter.rot = math.sin(time * 2.5) / 20
 
         Module.CurrentSceneData.currentWave.text = "Wave: " .. CurrentGameData.currentWave
+        Module.CurrentSceneData.currentWave.rot = math.sin(time) / 35
 
         local informationText
 
@@ -238,6 +306,7 @@ function Module.update(deltaTime)
         end
 
         Module.CurrentSceneData.information.text = informationText
+        Module.CurrentSceneData.information.rot = math.sin(time) / 35
     elseif not CurrentGameData.gameStarted and Module.CurrentScene == "mainmenu" then
         Module.CurrentSceneData.logo.rot = math.sin(time) / 15
 
@@ -254,6 +323,9 @@ function Module.update(deltaTime)
         Module.CurrentSceneData.backToMenuButton.rot = rot
 
         Module.CurrentSceneData.result.text = (CurrentGameData.gameWon and "You won!" or "You lost!")
+        Module.CurrentSceneData.result.rot = -sin
+    elseif Module.CurrentScene == "splashscreen" then
+        Module.CurrentSceneData.logo.rot = math.sin(time) / 15
     end
 
     if Module.rangeVisualizer then

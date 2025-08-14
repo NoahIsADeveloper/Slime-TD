@@ -37,7 +37,7 @@ return {
         local sprite
 
         if type == "sprite" then
-            if love.filesystem.getInfo(properties.spritePath, "file") then
+            if love.filesystem.getInfo(properties.spritePath or "", "file") then
                 sprite = love.graphics.newImage(properties.spritePath)
             else
                 sprite = love.graphics.newImage("assets/sprites/debug_missing.png")
