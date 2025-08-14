@@ -205,12 +205,16 @@ function Module.mousepressed(mouseButton)
     -- end
 
     if Module.CurrentScene == "mainmenu" and not CurrentGameData.gameStarted then
-        if Module.CurrentSceneData.playButton:isClicked() then
+        if Module.CurrentSceneData.playButton:isClicked() and mouseButton == 1 then
             require("modules.gameplayLoop").startGame("normal", "grasslands")
         end
-    elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted then
+    elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then
         if Module.CurrentSceneData.backToMenuButton:isClicked() then
             Module.loadScene("mainmenu", true)
+        end
+    elseif Module.CurrentScene == "ingame" then
+        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeTowerButtonBackground:isClicked() and mouseButton == 1 and Module.CurrentSceneData.upgradeTowerButtonBackground.alpha == 1 then
+            Module.currentlySelectedUnit:upgrade()
         end
     end
 
@@ -348,6 +352,23 @@ function Module.update(deltaTime)
 
         Module.CurrentSceneData.currentWave.text = "Wave: " .. CurrentGameData.currentWave
         Module.CurrentSceneData.currentWave.rot = math.sin(time) / 35
+
+        if Module.currentlySelectedUnit then
+            local x, y = Module.currentlySelectedUnit.element.x, Module.currentlySelectedUnit.element.y - 65
+
+            Module.CurrentSceneData.upgradeTowerButtonBackground.x, Module.CurrentSceneData.upgradeTowerButtonBackground.y = x, y
+            Module.CurrentSceneData.upgradeTowerButton.x, Module.CurrentSceneData.upgradeTowerButton.y = x, y
+        end
+
+        local alpha = (Module.currentlySelectedUnit and 1 or 0)
+
+        if Module.currentlySelectedUnit then
+            if Module.currentlySelectedUnit.currentUpgrade == #Module.currentlySelectedUnit.data.upgrades then alpha = 0 end
+            if Module.currentlySelectedUnit.data.upgrades[math.min(Module.currentlySelectedUnit.currentUpgrade + 1, #Module.currentlySelectedUnit.data.upgrades)].cost > CurrentGameData.cash then alpha = 0 end
+        end
+
+        Module.CurrentSceneData.upgradeTowerButtonBackground.alpha = alpha
+        Module.CurrentSceneData.upgradeTowerButton.alpha = alpha
 
         local informationText
 
