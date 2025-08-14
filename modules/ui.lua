@@ -201,7 +201,7 @@ function Module.mousepressed(mouseButton)
         end
     elseif Module.CurrentScene == "resultscreen" then
         if Module.CurrentSceneData.backToMenuButton:isClicked() then
-            Module.loadScene("mainmenu")
+            Module.loadScene("mainmenu", true)
         end
     end
 
