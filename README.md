@@ -1,6 +1,6 @@
 <p align="center">
   <img src="assets/sprites/logo.png" alt="Slime TD Logo" width="700"><br>
-  <span style="font-size:50px;">A tower defense game created in LOVE2D where you defend your base against waves of slimes.</span></p>
+  <h2>A tower defense game created in LOVE2D where you defend your base against waves of slimes.</h2>
 </p>
 
 ## Official Links
