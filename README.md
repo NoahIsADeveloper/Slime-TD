@@ -10,7 +10,7 @@ https://shibathedeveloper.itch.io/slime-td
 **Note:** If you just want to play the game, use the official links above.  
 1. Install [Visual Studio Code](https://code.visualstudio.com/download)  
 2. Install [LOVE2D](https://www.love2d.org/)  
-3. Install these VS Code extensions:  
+3. Install these VSC extensions:  
    - [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua)  
    - [LOVE2D Support](https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d)  
 
