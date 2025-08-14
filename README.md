@@ -4,8 +4,9 @@
 </p>
 
 ## Special Credits
+Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
 Sound Effects https://freesound.org/
-Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas
+ • [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/)
 
 ## Official Links
 https://shibathedeveloper.itch.io/slime-td
