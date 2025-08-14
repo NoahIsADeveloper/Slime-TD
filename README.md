@@ -1,3 +1,5 @@
+![Slime TD Logo](assets/sprites/logo.png)
+
 ## OFFICIAL LINKS
 https://shibathedeveloper.itch.io/slime-td
 
