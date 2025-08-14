@@ -8,9 +8,6 @@ local UnitModule = require("modules.unit")
 local UIModule = require("modules.ui")
 local extra = require("modules.extra")
 
-local splashTime = 0
-local switched = false
-
 function love.load()
     local imageData = love.image.newImageData("assets/sprites/cursor.png")
     local cursor = love.mouse.newCursor(imageData, 5, 5)
@@ -24,14 +21,6 @@ function love.load()
 end
 
 function love.update(deltaTime)
-    if not switched then
-        splashTime = splashTime + deltaTime
-        if splashTime >= 4 then
-            UIModule.loadScene("mainmenu", true)
-            switched = true
-        end
-    end
-
     UIModule.update(deltaTime)
 
     if not CurrentGameData.gameStarted then return end
@@ -50,6 +39,8 @@ function love.keypressed(key)
        print(extra.getScaledMousePos())
     elseif key == "e" and CurrentGameData.gameStarted then
         UIModule.startPlacement("basicturret")
+    elseif key == "r" and CurrentGameData.gameStarted then
+        GameplayLoopModule.stopGame()
     elseif key == "f11" then
         local fullscreen = love.window.getFullscreen()
         love.window.setFullscreen(not fullscreen)
