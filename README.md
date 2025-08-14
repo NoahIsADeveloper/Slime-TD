@@ -35,5 +35,5 @@ https://shibathedeveloper.itch.io/slime-td
 9. Copy all DLLs that came with `love.exe` into the same folder.
 
 ## Troubleshooting Build
-- **Windows Defender Warning:** The `.exe` might be quarantined. Restore it from quarantine.
+- **Windows Defender Warning / Cannot find the .exe:** The `.exe` might be quarantined. Restore it from quarantine.
 - **Missing DLLs:** Make sure the `.exe` and all DLLs are in the same folder.
