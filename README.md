@@ -3,6 +3,9 @@
   A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 </p>
 
+## Special Credits
+Font: Pixel Operator (Bold) - Jayvee Enaguas
+
 ## Official Links
 https://shibathedeveloper.itch.io/slime-td
 
