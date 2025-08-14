@@ -6,10 +6,10 @@ Download Lua and LOVE2D Support extensions for VSC: <br>
 https://marketplace.visualstudio.com/items?itemName=sumneko.lua <br>
 https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d <br>
 
-To playtest: 
+To playtest: <br>
 Press ALT + L while in a .lua file, LOVE2D Support will run it for you. <br>
 
-IF LOVE2D SUPPORT QUICK PLAYTEST DOESN'T WORK: 
+IF LOVE2D SUPPORT QUICK PLAYTEST DOESN'T WORK: <br>
 Go to the extension settings, and change path to the LOVE2D executable
 
 ## OFFICIAL LINKS
