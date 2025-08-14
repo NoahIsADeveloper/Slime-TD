@@ -1,25 +1,42 @@
 ![Slime TD Logo](assets/sprites/logo.png)
 
-A tower defense game created in LOVE2D where you defend your base against waves of slimes. 
+# Slime TD
+A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 
-## OFFICIAL LINKS
-https://shibathedeveloper.itch.io/slime-td
+## Official Links
+Play the game here: [Slime TD on itch.io](https://shibathedeveloper.itch.io/slime-td)
 
-## DEVELOPMENT SETUP
-**!! IF YOU JUST WANT TO PLAY THE GAME, USE THE OFFICIAL LINKS ABOVE !!**
+## Development Setup (Windows Only)
+**Note:** If you just want to play the game, use the official links above.  
+1. Install [Visual Studio Code](https://code.visualstudio.com/download)  
+2. Install [LOVE2D](https://www.love2d.org/)  
+3. Install these VS Code extensions:  
+   - [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua)  
+   - [LOVE2D Support](https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d)  
 
-Download Visual Studio Code: https://code.visualstudio.com/download <br>
-Download LOVE2D: https://www.love2d.org/ <br>
+## How to Playtest
+- Press `ALT + L` while in any `.lua` file; LOVE2D Support will run the game.  
+- If that doesn't work, go to the extension settings and set the path to the LOVE2D executable.  
+- Still not working? Drag the project folder onto the LOVE2D executable directly.  
 
-Download Lua and LOVE2D Support extensions for VSC: <br>
-https://marketplace.visualstudio.com/items?itemName=sumneko.lua <br>
-https://marketplace.visualstudio.com/items?itemName=pixelbyte-studios.pixelbyte-love2d <br>
+## How to Build
+1. Create a folder on your desktop.  
+2. Create a `.zip` file in that folder.  
+3. Copy all game files into the `.zip` file.  
+4. Rename the `.zip` file to `.love`.  
+5. Name the `.love` file whatever you want (e.g., `SlimeTD.love`).  
+6. Copy `love.exe` into the same folder.  
+7. Open Command Prompt with administrator permissions.  
+8. Run the following command (replace `SlimeTD` with your `.love` file name):
+   copy /b love.exe+SlimeTD.love SlimeTD.exe
+9. Copy all DLLs that came with `love.exe` into the same folder.  
 
-## HOW TO PLAYTEST
-Press ALT + L while in a .lua file, LOVE2D Support will run it for you. <br>
+## Troubleshooting Build
+- **Windows Defender Warning:** The `.exe` might be quarantined. Restore it from quarantine.  
+- **Missing DLLs:** Make sure the `.exe` and all DLLs are in the same folder.  
 
-IF THAT DOESN'T WORK: <br>
-Go to the extension settings, and change path to the LOVE2D executable <br>
+## Optional Tips
+- If you’re tweaking code often, consider running the game directly through the VS Code extension for faster testing.  
+- Keep your `.love` file and DLLs together — moving them around can break the build.  
 
-IF ABOVE DOESN'T WORK EITHER: <br> 
-Find your LOVE2D executable or a shortcut to it, then drag the project folder into it.
+Enjoy defending your base from slimes! 🐌💥
