@@ -1,5 +1,7 @@
 ![Slime TD Logo](assets/sprites/logo.png)
 
+A tower defense game created in LOVE2D where you defend your base against waves of slimes. 
+
 ## OFFICIAL LINKS
 https://shibathedeveloper.itch.io/slime-td
 
