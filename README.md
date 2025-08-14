@@ -1,7 +1,7 @@
 ## OFFICIAL LINKS
 https://shibathedeveloper.itch.io/slime-td
 
-## SETUP
+## DEVELOPMENT SETUP
 **!! IF YOU JUST WANT TO PLAY THE GAME, USE THE OFFICIAL LINKS ABOVE !!**
 
 Download Visual Studio Code: https://code.visualstudio.com/download <br>
