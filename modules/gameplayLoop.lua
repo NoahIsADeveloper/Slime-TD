@@ -2,6 +2,7 @@ local CurrentGameData = require("modules.currentGameData")
 local EnemyModule = require("modules.enemy")
 local UnitModule = require("modules.unit")
 local MapModule = require("modules.map")
+local UIModule = require("modules.ui")
 
 local Module = {}
 
@@ -9,6 +10,7 @@ local waveCoroutine
 
 local function waitSeconds(seconds, updateWaveTimer)
     local timer = 0
+
     if updateWaveTimer then CurrentGameData.waveTimer = math.ceil(seconds) end
 
     while timer < seconds do
@@ -33,6 +35,8 @@ function Module.startGame(difficulty, map)
 
     if not love.filesystem.getInfo(path) then return end
 
+    UIModule.loadScene("ingame")
+
     local difficultyData = require(modulePath)
     CurrentGameData.waves = difficultyData.waves or {}
 
@@ -49,11 +53,12 @@ function Module.startGame(difficulty, map)
 
     waveCoroutine = coroutine.create(function()
         for index, wave in ipairs(CurrentGameData.waves) do
+            waitSeconds(5, true)
             CurrentGameData.currentWave = index
 
             for _, enemyGroup in ipairs(wave.enemies) do
                 for _ = 1, enemyGroup.count do
-                    EnemyModule.new(enemyGroup.type)
+                    EnemyModule.new(enemyGroup.type, enemyGroup.hidden)
                     waitSeconds(enemyGroup.spawnInterval or 1, false)
                 end
             end
@@ -62,8 +67,7 @@ function Module.startGame(difficulty, map)
                 waitSeconds(0.1, false)
             end
 
-            CurrentGameData.cash = CurrentGameData.cash + (index * 200)
-            if CurrentGameData.waves[index + 1] then waitSeconds(5, true) end
+            CurrentGameData.cash = CurrentGameData.cash + (index * 150)
         end
 
         CurrentGameData.gameWon = true
@@ -97,6 +101,8 @@ function Module.stopGame()
     CurrentGameData.waves = nil
 
     waveCoroutine = nil
+
+    UIModule.loadScene("resultscreen")
 end
 
 return Module

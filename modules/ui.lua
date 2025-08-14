@@ -12,11 +12,34 @@ local Module = {
         placeholder = nil
     },
 
+    CurrentSceneData = {},
+    CurrentScene = "",
+
     currentlySelectedUnit = nil,
     rangeVisualizer = nil
 }
 
 local UnitPlacementData = Module.UnitPlacementData
+
+function Module.loadScene(scene)
+    local pathModule = "modules.data.ui-scenes." .. scene
+    local path = "modules/data/ui-scenes/" .. scene .. ".lua"
+
+    if not love.filesystem.getInfo(path) then return end
+
+    local sceneData = require(pathModule)
+
+    for _, element in pairs(Module.CurrentSceneData) do
+        element:remove()
+    end
+
+    Module.CurrentSceneData = {}
+    Module.CurrentScene = scene
+
+    for index, elementProperties in pairs(sceneData) do
+        Module.CurrentSceneData[index] = RenderModule.new(elementProperties)
+    end
+end
 
 function Module.checkCanPlace()
     UnitPlacementData.canPlace = true
@@ -77,21 +100,52 @@ function Module.startPlacement(unitType)
     if Module.rangeVisualizer then Module.rangeVisualizer:remove() Module.rangeVisualizer = nil end
 
     local scale = data.range / 500
-    Module.rangeVisualizer = RenderModule.new("assets/sprites/rangevisualizer.png", 1, x, y, .8, nil, 0, scale, scale)
+
+    local elementProperties = {
+            type = "sprite",
+            spritePath = "assets/sprites/rangevisualizer.png",
+            zindex = 1,
+            x = x,
+            y = y,
+            alpha = .8,
+            scaleX = scale,
+            scaleY = scale
+        }
+
+    Module.rangeVisualizer = RenderModule.new(elementProperties)
+
+    local elementProperties = {
+        type = "sprite",
+        spritePath = data.spritePath,
+        zindex = 99,
+        x = x,
+        y = y,
+        alpha = .8,
+    }
 
     UnitPlacementData.placeholder = {
-        element = RenderModule.new(data.spritePath, 99, x, y, .8),
+        element = RenderModule.new(elementProperties),
         data = data,
         type = unitType
     }
 end
 
 function Module.mousepressed(mouseButton)
+    if Module.CurrentScene == "mainmenu" then
+        if Module.CurrentSceneData.playButton:isClicked() then
+            require("modules.gameplayLoop").startGame("normal", "grasslands")
+        end
+    elseif Module.CurrentScene == "resultscreen" then
+        if Module.CurrentSceneData.backToMenuButton:isClicked() then
+            Module.loadScene("mainmenu")
+        end
+    end
+
     if mouseButton == 1 and not UnitPlacementData.currentlyPlacing then
         local clicked = false
 
         for _, unit in pairs(UnitModule.getUnits()) do
-            if unit:isClicked() then
+            if unit.element:isClicked() then
                 clicked = true
 
                 if Module.rangeVisualizer then
@@ -109,7 +163,19 @@ function Module.mousepressed(mouseButton)
                 local currentData = unit.data.upgrades[unit.currentUpgrade]
 
                 local scale = currentData.range / 500
-                Module.rangeVisualizer = RenderModule.new("assets/sprites/rangevisualizer.png", 1, unit.element.x, unit.element.y, .8, nil, 0, scale, scale)
+
+                local elementProperties = {
+                    type = "sprite",
+                    spritePath = "assets/sprites/rangevisualizer.png",
+                    zindex = 1,
+                    x = unit.element.x,
+                    y = unit.element.y,
+                    alpha = .8,
+                    scaleX = scale,
+                    scaleY = scale
+                }
+
+                Module.rangeVisualizer = RenderModule.new(elementProperties)
             end
         end
 
@@ -141,6 +207,54 @@ end
 
 function Module.update(deltaTime)
     local time = os.clock()
+
+    if CurrentGameData.gameStarted then
+        Module.CurrentSceneData.baseHealth.text =  math.max(CurrentGameData.baseHealth, 0) .. "/" .. CurrentGameData.maxBaseHealth .. " BASE HP"
+
+        if CurrentGameData.baseHealth <= 0 then
+            Module.CurrentSceneData.baseHealth.color = {r=255, g=58, b=58}
+        elseif CurrentGameData.baseHealth < CurrentGameData.maxBaseHealth then
+            Module.CurrentSceneData.baseHealth.color = {r=255, g=150, b=50}
+        else
+            Module.CurrentSceneData.baseHealth.color = {r=107, g=255, b=0107}
+        end
+
+        Module.CurrentSceneData.cashCounter.text = "$" .. CurrentGameData.cash
+
+        Module.CurrentSceneData.currentWave.text = "Wave: " .. CurrentGameData.currentWave
+
+        local informationText
+
+        if CurrentGameData.waveTimer then
+            informationText = "Wave incoming! (" .. CurrentGameData.waveTimer .. "s)"
+        else
+            local count = 0
+
+            for _, _ in pairs(EnemyModule.getEnemies()) do
+                count = count + 1
+            end
+
+            informationText = "Slimes alive: " .. count
+        end
+
+        Module.CurrentSceneData.information.text = informationText
+    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "mainmenu" then
+        Module.CurrentSceneData.logo.rot = math.sin(time) / 15
+
+        local sin = math.sin(time) / 20
+
+        local rot = (Module.CurrentSceneData.playButton:isClicked() and -sin or 0)
+        Module.CurrentSceneData.playButtonLabel.rot = rot
+        Module.CurrentSceneData.playButton.rot = rot
+    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "resultscreen" then
+        local sin = math.sin(time) / 20
+
+        local rot = (Module.CurrentSceneData.backToMenuButton:isClicked() and sin or 0)
+        Module.CurrentSceneData.backToMenuButtonLabel.rot = rot
+        Module.CurrentSceneData.backToMenuButton.rot = rot
+
+        Module.CurrentSceneData.result.text = (CurrentGameData.gameWon and "You won!" or "You lost!")
+    end
 
     if Module.rangeVisualizer then
         Module.rangeVisualizer.rot = Module.rangeVisualizer.rot + (0.5 * deltaTime)

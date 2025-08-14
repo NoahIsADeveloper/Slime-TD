@@ -14,18 +14,29 @@ local function findEnemyInRange(unit, range)
     local farthestEnemy = nil
     local farthestProgress = -math.huge
 
+    local currentData = unit.data.upgrades[unit.currentUpgrade]
+
     for _, enemy in pairs(EnemyModule.getEnemies()) do
         if enemy.element and enemy.data.health > 0 then
-            local dx = enemy.element.x - unit.element.x
-            local dy = enemy.element.y - unit.element.y
-            local dist = math.sqrt(dx * dx + dy * dy)
 
-            if dist <= range then
-                local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
+            local canTarget = true
 
-                if progress > farthestProgress then
-                    farthestProgress = progress
-                    farthestEnemy = enemy
+            if enemy.data.hidden and not currentData.hiddenDetection then
+                canTarget = false
+            end
+
+            if canTarget then
+                local dx = enemy.element.x - unit.element.x
+                local dy = enemy.element.y - unit.element.y
+                local dist = math.sqrt(dx * dx + dy * dy)
+
+                if dist <= range then
+                    local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
+
+                    if progress > farthestProgress then
+                       farthestProgress = progress
+                       farthestEnemy = enemy
+                   end
                 end
             end
         end
@@ -47,22 +58,21 @@ function Module:upgrade()
     local currentData = self.data.upgrades[self.currentUpgrade]
     local oldElement = self.element
 
-    self.element = RenderModule.new(currentData.spritePath, 1, oldElement.x, oldElement.y, oldElement.alpha, oldElement.color, oldElement.rot, oldElement.scaleX, oldElement.scaleY)
+    local elementProperties = {
+        type = "sprite",
+        spritePath = currentData.spritePath,
+        zindex = 1,
+        x = oldElement.x,
+        y = oldElement.y,
+        alpha = oldElement.alpha,
+        color = oldElement.color,
+        rot = oldElement.rot,
+        scaleX = oldElement.scaleX,
+        scaleY = oldElement.scaleY
+    }
+
+    self.element = RenderModule.new(elementProperties)
     oldElement:remove()
-end
-
-function Module:isClicked()
-    local mx, my = extra.getScaledMousePos()
-    local sprite = self.element.sprite
-    local x, y = self.element.x, self.element.y
-
-    local width = sprite:getWidth()
-    local height = sprite:getHeight()
-    local halfWidth = width / 2
-    local halfHeight = height / 2
-
-    return mx >= (x - halfWidth) and mx <= (x + halfWidth)
-       and my >= (y - halfHeight) and my <= (y + halfHeight)
 end
 
 function Module:update()
@@ -114,8 +124,16 @@ return {
 
         UnitIdCounter = UnitIdCounter + 1
 
+        local elementProperties = {
+            type = "sprite",
+            spritePath = data.upgrades[1].spritePath,
+            zindex = 1,
+            x = x,
+            y = y,
+        }
+
         local newUnit = setmetatable({
-            element = RenderModule.new(data.upgrades[1].spritePath, 1, x, y),
+            element = RenderModule.new(elementProperties),
             data = data,
             tableIndex = UnitIdCounter
         }, Module)

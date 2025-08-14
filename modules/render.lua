@@ -13,32 +13,59 @@ function Module:remove()
     self = nil
 end
 
+function Module:isClicked()
+    if self.type == "sprite" then
+        local mx, my = extra.getScaledMousePos()
+        local sprite = self.sprite
+        local x, y = self.x, self.y
+
+        local width = sprite:getWidth()
+        local height = sprite:getHeight()
+        local halfWidth = width / 2
+        local halfHeight = height / 2
+
+        return mx >= (x - halfWidth) and mx <= (x + halfWidth)
+        and my >= (y - halfHeight) and my <= (y + halfHeight)
+    end
+
+    return false
+end
+
 return {
-    new = function(spritePath, zindex, x, y, alpha, color, rot, scaleX, scaleY)
+    new = function(properties)
+        local type = properties.type or "sprite"
         local sprite
 
-        if love.filesystem.getInfo(spritePath, "file") then
-            sprite = love.graphics.newImage(spritePath)
-        else
-            sprite = love.graphics.newImage("assets/sprites/debug_missing.png")
+        if type == "sprite" then
+            if love.filesystem.getInfo(properties.spritePath, "file") then
+                sprite = love.graphics.newImage(properties.spritePath)
+            else
+                sprite = love.graphics.newImage("assets/sprites/debug_missing.png")
+            end
         end
 
-        if not color then color = {r = 255, g = 255, b = 255} end
-        if not zindex then zindex = 0 end
+        if not properties.color then properties.color = {r = 255, g = 255, b = 255} end
+        if not properties.zindex then properties.zindex = 0 end
 
         ElementIdCounter = ElementIdCounter + 1
         local element = setmetatable({
-            sprite = sprite,
-            x = x or 0,
-            y = y or 0,
-            alpha = alpha or 1,
-            rot = rot or 0,
-            scaleX = scaleX or 1,
-            scaleY = scaleY or 1,
-            zindex = zindex or 0,
+            type = type,
+            x = properties.x or 0,
+            y = properties.y or 0,
+            alpha = properties.alpha or 1,
+            rot = properties.rot or 0,
+            scaleX = properties.scaleX or 1,
+            scaleY = properties.scaleY or 1,
+            zindex = properties.zindex or 0,
             tableIndex = ElementIdCounter,
-            color = {r = color.r or 255, g = color.g or 255, b = color.b or 255},
+            color = {r = properties.color.r or 255, g = properties.color.g or 255, b = properties.color.b or 255},
         }, Module)
+
+        if type == "sprite" then
+            element.sprite = sprite
+        elseif type == "text" then
+            element.text = properties.text or ""
+        end
 
         Elements[ElementIdCounter] = element
         return element
@@ -68,21 +95,39 @@ return {
         end)
 
         for _, element in ipairs(sortedElements) do
-            love.graphics.setColor(element.color.r, element.color.g, element.color.b, element.alpha)
+            love.graphics.setColor(element.color.r / 255, element.color.g / 255, element.color.b / 255, element.alpha)
 
-            local ox = element.sprite:getWidth() / 2
-            local oy = element.sprite:getHeight() / 2
+            if element.type == "sprite" then
+                local ox = element.sprite:getWidth() / 2
+                local oy = element.sprite:getHeight() / 2
 
-            love.graphics.draw(
-                element.sprite,
-                element.x * scale + offsetX,
-                element.y * scale + offsetY,
-                element.rot,
-                element.scaleX * scale,
-                element.scaleY * scale,
-                ox,
-                oy
-            )
+                love.graphics.draw(
+                    element.sprite,
+                    element.x * scale + offsetX,
+                    element.y * scale + offsetY,
+                    element.rot,
+                    element.scaleX * scale,
+                    element.scaleY * scale,
+                    ox,
+                    oy
+                )
+            elseif element.type == "text" then
+                local font = love.graphics.getFont()
+                local ox = font:getWidth(element.text) / 2
+                local oy = font:getAscent() / 2
+
+                love.graphics.print(
+                    element.text,
+                    element.x * scale + offsetX,
+                    element.y * scale + offsetY,
+                    element.rot,
+                    element.scaleX * scale,
+                    element.scaleY * scale,
+                    ox,
+                    oy
+                )
+            end
+
 
             love.graphics.setColor(1, 1, 1, 1)
         end

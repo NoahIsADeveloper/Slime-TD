@@ -39,7 +39,7 @@ function Module:update(deltaTime)
         self.element.alpha = 0.8
     else
         self.element.color = {r = 255, g = 255, b = 255}
-        self.element.alpha = 1
+        self.element.alpha = (self.data.hidden and 0.6 or 1)
     end
 
     local currentMap = CurrentGameData.currentMap
@@ -132,7 +132,7 @@ function Module:remove()
 end
 
 return {
-    new = function(enemyType)
+    new = function(enemyType, hidden)
         local pathModule = "modules.data.enemies." .. enemyType
         local path = "modules/data/enemies/" .. enemyType .. ".lua"
 
@@ -141,8 +141,14 @@ return {
         EnemyIdCounter = EnemyIdCounter + 1
         local data = extra.deepCopy(require(pathModule))
 
+        local elementProperties = {
+            type = "sprite",
+            spritePath = data.spritePath,
+            zindex = 2
+        }
+
         local newEnemy = setmetatable({
-            element = RenderModule.new(data.spritePath, 2),
+            element = RenderModule.new(elementProperties),
             data = data,
             tableIndex = EnemyIdCounter,
             randomOffset = math.random(-1000, 1000) / 1000
@@ -151,6 +157,7 @@ return {
         newEnemy.data.health = newEnemy.data.maxHealth
         newEnemy.data.currentWaypoint = 0
         newEnemy.data.flashTimer = 0
+        newEnemy.data.hidden = hidden
 
         Enemies[EnemyIdCounter] = newEnemy
 

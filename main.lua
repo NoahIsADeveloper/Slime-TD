@@ -13,23 +13,27 @@ function love.load()
     local cursor = love.mouse.newCursor(imageData, 5, 5)
     love.mouse.setCursor(cursor)
 
-    love.graphics.setFont(love.graphics.newFont("assets/PixelOperator-Bold.ttf", 24))
+    local font = love.graphics.newFont("assets/PixelOperator-Bold.ttf", 50)
+    font:setFilter("nearest", "nearest")
 
-    GameplayLoopModule.startGame("normal", "grasslands")
+    love.graphics.setFont(font)
+
+    UIModule.loadScene("mainmenu")
+    --GameplayLoopModule.startGame("normal", "grasslands")
 end
 
 function love.update(deltaTime)
+    UIModule.update(deltaTime)
+
     if not CurrentGameData.gameStarted then return end
 
     GameplayLoopModule.update(deltaTime)
     EnemyModule.updateAll(deltaTime)
     UnitModule.updateAll(deltaTime)
-    UIModule.update(deltaTime)
 end
 
 function love.draw()
     RenderModule.drawAll()
-    love.graphics.print("$" .. CurrentGameData.cash .. " | " .. CurrentGameData.baseHealth .. "/" .. CurrentGameData.maxBaseHealth .. " HP") --%note temporary
 end
 
 function love.keypressed(key)
