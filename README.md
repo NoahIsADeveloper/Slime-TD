@@ -3,6 +3,9 @@
   A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 </p>
 
+## !! WARNING !!
+ui code is cancer lmao
+
 ## Special Credits
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas
 
