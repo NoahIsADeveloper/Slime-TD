@@ -283,7 +283,18 @@ function Module.update(deltaTime)
 
     local hovering = false
 
+    local enemies = {}
     for _, enemy in pairs(EnemyModule.getEnemies()) do
+        if enemy and enemy.element then
+            table.insert(enemies, enemy)
+        end
+    end
+
+    table.sort(enemies, function(a, b)
+        return a.element.tableIndex > b.element.tableIndex
+    end)
+
+    for _, enemy in ipairs(enemies) do
         if enemy.element:isClicked() and not hovering then
             hovering = true
 
