@@ -33,7 +33,3 @@ Play the game here: [Slime TD on itch.io](https://shibathedeveloper.itch.io/slim
 ## Troubleshooting Build
 - **Windows Defender Warning:** The `.exe` might be quarantined. Restore it from quarantine.  
 - **Missing DLLs:** Make sure the `.exe` and all DLLs are in the same folder.  
-
-## Optional Tips
-- If you’re tweaking code often, consider running the game directly through the VS Code extension for faster testing.  
-- Keep your `.love` file and DLLs together — moving them around can break the build.  
