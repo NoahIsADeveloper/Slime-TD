@@ -2,7 +2,7 @@ return {
     gameStarted = false,
     gameWon = false,
 
-    currentMapPathMask = nil,
+    currentMapMask = nil,
     currentMap = nil,
 
     timeSinceLastSpawn = 0,

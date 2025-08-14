@@ -16,7 +16,7 @@ function Module.load(mapName)
     local screenWidth, screenHeight = love.graphics.getDimensions()
     RenderModule.new(newMap.spritePath, 0, screenWidth / 2, screenHeight / 2)
 
-    CurrentGameData.currentMapPathMask = love.image.newImageData(newMap.pathMask)
+    CurrentGameData.currentMapMask = love.image.newImageData(newMap.mask)
     CurrentGameData.currentMap = newMap
 end
 

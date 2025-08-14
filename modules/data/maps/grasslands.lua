@@ -1,6 +1,7 @@
 return {
     spritePath = "assets/sprites/map_grasslands.png",
-    pathMask = "assets/sprites/map_grasslands_pathmask.png",
+    mask = "assets/sprites/map_grasslands_mask.png",
+
     waypoints = {
         {x = 0, y = 123},
         {x = 285, y = 135},

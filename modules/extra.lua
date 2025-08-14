@@ -33,7 +33,13 @@ function Module.getScaledMousePos()
     local x = (mouseX - offsetX) / scale
     local y = (mouseY - offsetY) / scale
 
+    x, y = Module.clamp(x, 0, 800), Module.clamp(y, 0, 600)
+
     return x, y
+end
+
+function Module.clamp(x, min, max)
+    return math.max(math.min(x, max), min)
 end
 
 return Module

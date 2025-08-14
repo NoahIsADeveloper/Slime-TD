@@ -26,18 +26,18 @@ function Module.checkCanPlace()
         return
     end
 
-    local px, py = UnitPlacementData.placeholder.element.x, UnitPlacementData.placeholder.element.y
-    local pathMask = CurrentGameData.currentMapPathMask
+    local x, y = extra.getScaledMousePos()
+    local mask = CurrentGameData.currentMapMask
 
     ---@diagnostic disable-next-line: undefined-field, need-check-nil
-    if px < 0 or py < 0 or px >= pathMask:getWidth() or py >= pathMask:getHeight() then
+    if x < 0 or y < 0 or x >= mask:getWidth() or y >= mask:getHeight() then
         return false
     end
 
     ---@diagnostic disable-next-line: need-check-nil, undefined-field
-    local r = pathMask:getPixel(px, py)
+    local r, g, b = mask:getPixel(x, y)
 
-    if r == 1 then
+    if not (r == 0 and g == 1 and b == 0) then
         UnitPlacementData.canPlace = false
         return
     end
@@ -54,7 +54,7 @@ function Module.checkCanPlace()
         local usw = unit.element.sprite:getWidth() * usx
         local ush = unit.element.sprite:getHeight() * usy
 
-        if math.abs(px - ux) < (psw + usw) / 2 and math.abs(py - uy) < (psh + ush) / 2 then
+        if math.abs(x - ux) < (psw + usw) / 2 and math.abs(y - uy) < (psh + ush) / 2 then
             UnitPlacementData.canPlace = false
             break
         end
@@ -75,8 +75,6 @@ function Module.startPlacement(unitType)
     local x, y = extra.getScaledMousePos()
 
     if Module.rangeVisualizer then Module.rangeVisualizer:remove() Module.rangeVisualizer = nil end
-
-    love.mouse.setVisible(false)
 
     local scale = data.range / 500
     Module.rangeVisualizer = RenderModule.new("assets/sprites/rangevisualizer.png", 1, x, y, .8, nil, 0, scale, scale)
@@ -136,9 +134,8 @@ function Module.mousepressed(mouseButton)
 
         Module.rangeVisualizer:remove()
         Module.rangeVisualizer = nil
-        UnitPlacementData.placeholder.element:remove()
 
-        love.mouse.setVisible(true)
+        UnitPlacementData.placeholder.element:remove()
     end
 end
 
@@ -158,9 +155,9 @@ function Module.update(deltaTime)
         UnitPlacementData.placeholder.element.rot = math.sin(time * 4) / 5
 
         if UnitPlacementData.canPlace then
-            UnitPlacementData.placeholder.element.color = {r = 255, g = 255, b = 255}
+            Module.rangeVisualizer.color = {r = 255, g = 255, b = 255}
         else
-            UnitPlacementData.placeholder.element.color = {r = 255, g = 0, b = 0}
+            Module.rangeVisualizer.color = {r = 255, g = 0, b = 0}
         end
     end
 end
