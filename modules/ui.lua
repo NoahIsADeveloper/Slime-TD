@@ -198,17 +198,17 @@ function Module.startPlacement(unitType)
 end
 
 function Module.mousepressed(mouseButton)
-    if mouseButton == 1 and not Module.splashScreenComplete then
-        Module.splashScreenComplete = true
-        Module.loadScene("mainmenu", true)
-    end
+    --%note buggy as hell, don't wanna deal with it rn
+    -- if mouseButton == 1 and not Module.splashScreenComplete then
+    --     Module.splashScreenComplete = true
+    --     Module.loadScene("mainmenu", true)
+    -- end
 
-
-    if Module.CurrentScene == "mainmenu" then
+    if Module.CurrentScene == "mainmenu" and not CurrentGameData.gameStarted then
         if Module.CurrentSceneData.playButton:isClicked() then
             require("modules.gameplayLoop").startGame("normal", "grasslands")
         end
-    elseif Module.CurrentScene == "resultscreen" then
+    elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted then
         if Module.CurrentSceneData.backToMenuButton:isClicked() then
             Module.loadScene("mainmenu", true)
         end
@@ -280,6 +280,27 @@ end
 
 function Module.update(deltaTime)
     local time = os.clock()
+
+    local hovering = false
+
+    for _, enemy in pairs(EnemyModule.getEnemies()) do
+        if enemy.element:isClicked() and not hovering then
+            hovering = true
+
+            Module.CurrentSceneData.enemyHealthCounter.text = enemy.data.health .. "/" .. enemy.data.maxHealth .. " HP"
+            Module.CurrentSceneData.enemyNameDisplay.text = enemy.data.displayName
+
+            local x, y = extra.getScaledMousePos()
+
+            Module.CurrentSceneData.enemyHealthCounter.x, Module.CurrentSceneData.enemyHealthCounter.y = x + 15, y - 15
+            Module.CurrentSceneData.enemyNameDisplay.x, Module.CurrentSceneData.enemyNameDisplay.y = x + 15, y - 35
+        end
+    end
+
+    if not hovering and Module.CurrentScene == "ingame" then
+        Module.CurrentSceneData.enemyHealthCounter.text = ""
+        Module.CurrentSceneData.enemyNameDisplay.text = ""
+    end
 
     if not Module.splashScreenComplete then
         Module.splashTime = Module.splashTime + deltaTime

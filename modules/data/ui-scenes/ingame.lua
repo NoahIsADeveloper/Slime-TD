@@ -34,5 +34,23 @@ return {
         zindex = 101,
         scaleX = .6,
         scaleY = .6
-    }
+    },
+    ["enemyNameDisplay"] = {
+        color = {r=255, g=255, b=255},
+        type = "text",
+        x = 0,
+        y = 0,
+        zindex = 101,
+        scaleX = .6,
+        scaleY = .6
+    },
+    ["enemyHealthCounter"] = {
+        color = {r=107, g=255, b=107},
+        type = "text",
+        x = 0,
+        y = 0,
+        zindex = 101,
+        scaleX = .6,
+        scaleY = .6
+    },
 }
