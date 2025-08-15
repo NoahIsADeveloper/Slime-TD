@@ -73,6 +73,15 @@ function Module:upgrade()
 
     self.element = RenderModule.new(elementProperties)
     oldElement:remove()
+
+    self.sellPrice = math.floor(currentData.cost / 1.5)
+end
+
+function Module:sell()
+    if not CurrentGameData.gameStarted then return end
+    CurrentGameData.cash = CurrentGameData.cash + self.sellPrice
+
+    self:remove()
 end
 
 function Module:update()
@@ -135,7 +144,8 @@ return {
         local newUnit = setmetatable({
             element = RenderModule.new(elementProperties),
             data = data,
-            tableIndex = UnitIdCounter
+            tableIndex = UnitIdCounter,
+            sellPrice = math.floor(data.upgrades[1].cost / 1.5),
         }, Module)
 
         newUnit.currentUpgrade = 1

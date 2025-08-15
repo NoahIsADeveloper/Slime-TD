@@ -16,16 +16,16 @@ end
 function Module:isClicked()
     if self.type == "sprite" then
         local mx, my = extra.getScaledMousePos()
+
         local sprite = self.sprite
         local x, y = self.x, self.y
-
-        local width = sprite:getWidth()
-        local height = sprite:getHeight()
+        local width = sprite:getWidth() * self.scaleX
+        local height = sprite:getHeight() * self.scaleY
         local halfWidth = width / 2
         local halfHeight = height / 2
 
         return mx >= (x - halfWidth) and mx <= (x + halfWidth)
-        and my >= (y - halfHeight) and my <= (y + halfHeight)
+           and my >= (y - halfHeight) and my <= (y + halfHeight)
     end
 
     return false

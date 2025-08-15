@@ -213,8 +213,12 @@ function Module.mousepressed(mouseButton)
             Module.loadScene("mainmenu", true)
         end
     elseif Module.CurrentScene == "ingame" then
-        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeTowerButtonBackground:isClicked() and mouseButton == 1 and Module.CurrentSceneData.upgradeTowerButtonBackground.alpha == 1 then
+        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeUnitButtonBackground:isClicked() and mouseButton == 1 and Module.CurrentSceneData.upgradeUnitButtonBackground.alpha == 1 then
             Module.currentlySelectedUnit:upgrade()
+        end
+
+        if Module.currentlySelectedUnit and Module.CurrentSceneData.sellUnitButtonBackground:isClicked() and mouseButton == 1 then
+            Module.currentlySelectedUnit:sell()
         end
     end
 
@@ -354,21 +358,46 @@ function Module.update(deltaTime)
         Module.CurrentSceneData.currentWave.rot = math.sin(time) / 35
 
         if Module.currentlySelectedUnit then
-            local x, y = Module.currentlySelectedUnit.element.x, Module.currentlySelectedUnit.element.y - 65
+            local x, y = Module.currentlySelectedUnit.element.x, Module.currentlySelectedUnit.element.y
 
-            Module.CurrentSceneData.upgradeTowerButtonBackground.x, Module.CurrentSceneData.upgradeTowerButtonBackground.y = x, y
-            Module.CurrentSceneData.upgradeTowerButton.x, Module.CurrentSceneData.upgradeTowerButton.y = x, y
+            Module.CurrentSceneData.upgradeUnitButtonBackground.x, Module.CurrentSceneData.upgradeUnitButtonBackground.y = x, y - 65
+            Module.CurrentSceneData.upgradeUnitButton.x, Module.CurrentSceneData.upgradeUnitButton.y = x, y - 65
+
+            Module.CurrentSceneData.sellUnitButtonBackground.x, Module.CurrentSceneData.sellUnitButtonBackground.y = x, y + 60
+            Module.CurrentSceneData.sellUnitButton.x, Module.CurrentSceneData.sellUnitButton.y = x, y + 60
         end
 
         local alpha = (Module.currentlySelectedUnit and 1 or 0)
 
+        Module.CurrentSceneData.sellUnitButtonBackground.alpha = alpha
+        Module.CurrentSceneData.sellUnitButton.alpha = alpha
+
         if Module.currentlySelectedUnit then
             if Module.currentlySelectedUnit.currentUpgrade == #Module.currentlySelectedUnit.data.upgrades then alpha = 0 end
             if Module.currentlySelectedUnit.data.upgrades[math.min(Module.currentlySelectedUnit.currentUpgrade + 1, #Module.currentlySelectedUnit.data.upgrades)].cost > CurrentGameData.cash then alpha = 0.5 end
+
+            Module.CurrentSceneData.upgradeUnitButton.text = "Upgrade ($" .. Module.currentlySelectedUnit.data.upgrades[Module.currentlySelectedUnit.currentUpgrade + 1].cost .. ")"
+            Module.CurrentSceneData.sellUnitButton.text = "Sell ($" .. Module.currentlySelectedUnit.sellPrice .. ")"
         end
 
-        Module.CurrentSceneData.upgradeTowerButtonBackground.alpha = alpha
-        Module.CurrentSceneData.upgradeTowerButton.alpha = alpha
+        Module.CurrentSceneData.upgradeUnitButtonBackground.alpha = alpha
+        Module.CurrentSceneData.upgradeUnitButton.alpha = alpha
+
+        if Module.CurrentSceneData.upgradeUnitButtonBackground:isClicked() then
+            Module.CurrentSceneData.upgradeUnitButtonBackground.rot = math.sin(time * 2.5) / 20
+            Module.CurrentSceneData.upgradeUnitButton.rot = math.sin(time * 2.5) / 20
+        else
+            Module.CurrentSceneData.upgradeUnitButtonBackground.rot = 0
+            Module.CurrentSceneData.upgradeUnitButton.rot = 0
+        end
+
+        if Module.CurrentSceneData.sellUnitButtonBackground:isClicked() then
+            Module.CurrentSceneData.sellUnitButtonBackground.rot = math.sin(time * 2.5) / 20
+            Module.CurrentSceneData.sellUnitButton.rot = math.sin(time * 2.5) / 20
+        else
+            Module.CurrentSceneData.sellUnitButtonBackground.rot = 0
+            Module.CurrentSceneData.sellUnitButton.rot = 0
+        end
 
         local informationText
 
