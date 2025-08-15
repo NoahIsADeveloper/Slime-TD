@@ -2,6 +2,7 @@
 
 local GameplayLoopModule = require("modules.gameplayLoop")
 local CurrentGameData = require("modules.currentGameData")
+local SaveFileModule = require("modules.savefile")
 local RenderModule = require("modules.render")
 local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
@@ -17,6 +18,8 @@ function love.load()
     local font = love.graphics.newFont("assets/PixelOperator-Bold.ttf", 50)
     font:setFilter("nearest", "nearest")
     love.graphics.setFont(font)
+
+    CurrentGameData.saveData = SaveFileModule.load()
 
     SoundModule.load()
     UIModule.loadScene("splashscreen", true)
@@ -38,10 +41,16 @@ function love.draw()
 end
 
 function love.keypressed(key)
+    if CurrentGameData.gameStarted then
+        for index, unit in pairs(CurrentGameData.saveData.loadout) do
+            if tonumber(key) == index then
+                UIModule.startPlacement(unit)
+            end
+        end
+    end
+
     if key == "o" then
        print(extra.getScaledMousePos())
-    elseif key == "e" and CurrentGameData.gameStarted then
-        UIModule.startPlacement("basicturret")
     -- elseif key == "r" and CurrentGameData.gameStarted then
     --     GameplayLoopModule.stopGame()
     elseif key == "f11" then
@@ -56,5 +65,6 @@ function love.mousepressed(_, _, button)
 end
 
 function love.quit()
+    SaveFileModule.save(CurrentGameData.saveData)
     love.window.setFullscreen(false)
 end

@@ -20,6 +20,7 @@ local Module = {
     rangeVisualizer = nil,
 
     transitionElement = nil,
+    transitioning = false,
     fade = {
         state = "none",
         speed = 2,
@@ -47,6 +48,10 @@ function Module.startFadeOut(callback)
 end
 
 function Module.loadScene(scene, animate)
+    if Module.transitioning then return end
+
+    Module.transitioning = true
+
     local loaded = false
     local function actuallyLoadScene()
         if loaded then return end
@@ -102,15 +107,17 @@ function Module.loadScene(scene, animate)
             local elapsed = 0
             local timerUpdate
 
-            timerUpdate = function(dt)
-                elapsed = elapsed + dt
+            timerUpdate = function(deltaTime)
+                elapsed = elapsed + deltaTime
                 if elapsed >= delay then
                     actuallyLoadScene()
-                    Module.startFadeOut(nil)
+                    Module.startFadeOut(function()
+                        Module.transitioning = false
+                    end)
 
                     Module.update = (function(original)
-                        return function(dt)
-                            original(dt)
+                        return function(deltaTime)
+                            original(deltaTime)
                             timerUpdate = nil
                         end
                     end)(Module.update)
@@ -118,13 +125,14 @@ function Module.loadScene(scene, animate)
             end
 
             local originalUpdate = Module.update
-            Module.update = function(dt)
-                originalUpdate(dt)
-                if timerUpdate then timerUpdate(dt) end
+            Module.update = function(deltaTime)
+                originalUpdate(deltaTime)
+                if timerUpdate then timerUpdate(deltaTime) end
             end
         end)
     else
         actuallyLoadScene()
+        Module.transitioning = false
     end
 end
 
@@ -225,26 +233,44 @@ function Module.mousepressed(mouseButton)
     --     Module.loadScene("mainmenu", true)
     -- end
 
-    if Module.CurrentScene == "mainmenu" and not CurrentGameData.gameStarted then
-        if Module.CurrentSceneData.playButton:isHovering() and mouseButton == 1 then
-            require("modules.gameplayLoop").startGame("normal", "grasslands")
-        end
+    if not Module.transitioning then
+        if Module.CurrentScene == "mainmenu" and not CurrentGameData.gameStarted then
+            if Module.CurrentSceneData.playButton:isHovering() and mouseButton == 1 then
+                require("modules.gameplayLoop").startGame("normal", "grasslands")
+            end
 
-        if Module.CurrentSceneData.exitButton:isHovering() and mouseButton == 1 then
-            love.window.setFullscreen(false)
-            love.event.quit()
-        end
-    elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then
-        if Module.CurrentSceneData.backToMenuButton:isHovering() then
-            Module.loadScene("mainmenu", true)
-        end
-    elseif Module.CurrentScene == "ingame" then
-        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeUnitButtonBackground:isHovering() and mouseButton == 1 and Module.CurrentSceneData.upgradeUnitButtonBackground.alpha == 1 then
-            Module.currentlySelectedUnit:upgrade()
-        end
+            if Module.CurrentSceneData.settingsButton:isHovering() and mouseButton == 1 then
+                Module.loadScene("settingsmenu", true)
+            end
 
-        if Module.currentlySelectedUnit and Module.CurrentSceneData.sellUnitButtonBackground:isHovering() and mouseButton == 1 then
-            Module.currentlySelectedUnit:sell()
+            if Module.CurrentSceneData.shopButton:isHovering() and mouseButton == 1 then
+                Module.loadScene("shopmenu", true)
+            end
+
+            if Module.CurrentSceneData.exitButton:isHovering() and mouseButton == 1 then
+                love.window.setFullscreen(false)
+                love.event.quit()
+            end
+        elseif Module.CurrentScene == "settingsmenu" and not CurrentGameData.gameStarted then
+            if Module.CurrentSceneData.backButton:isHovering() and mouseButton == 1 then
+                Module.loadScene("mainmenu", true)
+            end
+        elseif Module.CurrentScene == "shopmenu" and not CurrentGameData.gameStarted then
+            if Module.CurrentSceneData.backButton:isHovering() and mouseButton == 1 then
+                Module.loadScene("mainmenu", true)
+            end
+        elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then
+            if Module.CurrentSceneData.backToMenuButton:isHovering() then
+                Module.loadScene("mainmenu", true)
+            end
+        elseif Module.CurrentScene == "ingame" then
+            if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeUnitButtonBackground:isHovering() and mouseButton == 1 and Module.CurrentSceneData.upgradeUnitButtonBackground.alpha == 1 then
+                Module.currentlySelectedUnit:upgrade()
+            end
+
+            if Module.currentlySelectedUnit and Module.CurrentSceneData.sellUnitButtonBackground:isHovering() and mouseButton == 1 then
+                Module.currentlySelectedUnit:sell()
+            end
         end
     end
 
@@ -469,6 +495,26 @@ function Module.update(deltaTime)
         local rot = (Module.CurrentSceneData.exitButton:isHovering() and -sin or 0)
         Module.CurrentSceneData.exitButtonLabel.rot = rot
         Module.CurrentSceneData.exitButton.rot = rot
+
+        local rot = (Module.CurrentSceneData.settingsButton:isHovering() and -sin or 0)
+        Module.CurrentSceneData.settingsButtonLabel.rot = rot
+        Module.CurrentSceneData.settingsButton.rot = rot
+
+        local rot = (Module.CurrentSceneData.shopButton:isHovering() and -sin or 0)
+        Module.CurrentSceneData.shopButtonLabel.rot = rot
+        Module.CurrentSceneData.shopButton.rot = rot
+    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "settingsmenu" then
+        local sin = math.sin(time) / 20
+
+        local rot = (Module.CurrentSceneData.backButton:isHovering() and -sin or 0)
+        Module.CurrentSceneData.backButtonLabel.rot = rot
+        Module.CurrentSceneData.backButton.rot = rot
+    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "shopmenu" then
+        local sin = math.sin(time) / 20
+
+        local rot = (Module.CurrentSceneData.backButton:isHovering() and -sin or 0)
+        Module.CurrentSceneData.backButtonLabel.rot = rot
+        Module.CurrentSceneData.backButton.rot = rot
     elseif not CurrentGameData.gameStarted and Module.CurrentScene == "resultscreen" then
         local sin = math.sin(time) / 20
 

@@ -19,14 +19,7 @@ local function findEnemyInRange(unit, range)
 
     for _, enemy in pairs(EnemyModule.getEnemies()) do
         if enemy.element and enemy.data.health > 0 then
-
-            local canTarget = true
-
-            if enemy.data.hidden and not currentData.hiddenDetection then
-                canTarget = false
-            end
-
-            if canTarget then
+            if not (enemy.data.hidden and not currentData.hiddenDetection) then
                 local dx = enemy.element.x - unit.element.x
                 local dy = enemy.element.y - unit.element.y
                 local dist = math.sqrt(dx * dx + dy * dy)
@@ -37,7 +30,7 @@ local function findEnemyInRange(unit, range)
                     if progress > farthestProgress then
                        farthestProgress = progress
                        farthestEnemy = enemy
-                   end
+                    end
                 end
             end
         end
@@ -99,7 +92,7 @@ function Module:update()
         local angle = math.atan2(dy, dx)
 
         if os.clock() - self.lastAttack >= currentData.cooldown then
-            SoundModule.playSound(currentData.soundName, 0.5, true)
+            SoundModule.playSound(currentData.soundName, .3, true)
             CurrentGameData.cash = CurrentGameData.cash + 1
 
             enemyInRange:takeDamage(currentData.damage)

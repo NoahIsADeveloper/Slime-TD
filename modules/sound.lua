@@ -1,3 +1,5 @@
+local CurrentGameData = require("modules.currentGameData")
+
 local Module = {
     activeSources = {},
     loadedSounds = {},
@@ -47,7 +49,7 @@ function Module.playSound(name, volume, randomizePitch)
 
     local source = entry.source:clone()
     if randomizePitch then source:setPitch(1 + (math.random(-1000, 1000) / 7500)) end
-    source:setVolume(volume or 1)
+    source:setVolume((volume or 1) * CurrentGameData.saveData.settings.soundVolumeMulti)
     source:play()
     table.insert(Module.activeSources, source)
 end
@@ -61,6 +63,7 @@ function Module.playMusic(filename, loop)
     end
 
     source:setLooping(loop ~= false)
+    source:setVolume(CurrentGameData.saveData.settings.musicVolumeMulti)
     source:play()
     Module.activeMusic = source
     Module.activeMusicName = filename
