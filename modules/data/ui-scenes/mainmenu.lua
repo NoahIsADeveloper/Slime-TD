@@ -1,5 +1,5 @@
 return {
-    musicName = "mainmenu.wav",
+    musicName = "mainmenu.ogg",
     elements = {
         ["logo"] = {
             color = {r = 255, g = 255, b = 255},
