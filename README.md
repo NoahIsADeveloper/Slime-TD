@@ -5,13 +5,16 @@
 
 ## Special Credits
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
-Sound Effects https://freesound.org/ <br>
+Sound Effects: <br>
  - [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/) <br>
  - [hit.wav](https://freesound.org/people/DmitryKutin0/sounds/806263/) <br>
  - [turretshoot.wav](https://freesound.org/people/eardeer/sounds/402009/) <br>
  - [hyperturretshoot.wav](https://freesound.org/people/hotpin7/sounds/819269/) <br>
  - [moneygain.wav](https://freesound.org/people/LittleRobotSoundFactory/sounds/276106/) <br>
  - [tick.wav](https://freesound.org/people/KorgMS2000B/sounds/54406/) <br>
+ - [splashintro.wav](https://freesound.org/people/nikerk/sounds/764513/) <br>
+Music: <br>
+ - [mainmenu.wav](https://freesound.org/people/Xythe/sounds/516912/) <br>
 
 ## Official Links
 https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
@@ -39,7 +42,7 @@ https://shibathedeveloper.itch.io/slime-td
 6. Copy `love.exe` into the same folder.
 7. Open Command Prompt with administrator permissions.
 8. Run the following command (replace `SlimeTD` with your `.love` file name):
-   copy /b love.exe+SlimeTD.love SlimeTD.exe
+   `copy /b love.exe+SlimeTD.love SlimeTD.exe`
 9. Copy all DLLs that came with `love.exe` into the same folder.
 
 ## Troubleshooting Build
