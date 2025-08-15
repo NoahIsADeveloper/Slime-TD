@@ -9,11 +9,9 @@ local UIModule = require("modules.ui")
 local extra = require("modules.extra")
 
 function love.load()
-    if love.system.getOS() ~= "Web" then
-        local imageData = love.image.newImageData("assets/sprites/cursor.png")
-        local cursor = love.mouse.newCursor(imageData, 5, 5)
-        love.mouse.setCursor(cursor)
-    end
+    local imageData = love.image.newImageData("assets/sprites/cursor.png")
+    local cursor = love.mouse.newCursor(imageData, 5, 5)
+    love.mouse.setCursor(cursor)
 
     local font = love.graphics.newFont("assets/PixelOperator-Bold.ttf", 50)
     font:setFilter("nearest", "nearest")
