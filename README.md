@@ -5,6 +5,7 @@
 
 ## Special Credits
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
+
 Sound Effects: <br>
  - [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/) <br>
  - [hit.wav](https://freesound.org/people/DmitryKutin0/sounds/806263/) <br>
@@ -13,6 +14,7 @@ Sound Effects: <br>
  - [moneygain.wav](https://freesound.org/people/LittleRobotSoundFactory/sounds/276106/) <br>
  - [tick.wav](https://freesound.org/people/KorgMS2000B/sounds/54406/) <br>
  - [splashintro.wav](https://freesound.org/people/nikerk/sounds/764513/) <br>
+<br>
 Music: <br>
  - [mainmenu.wav](https://freesound.org/people/Xythe/sounds/516912/) <br>
 
