@@ -75,7 +75,7 @@ function Module:upgrade()
     self.element = RenderModule.new(elementProperties)
     oldElement:remove()
 
-    self.sellPrice = math.floor(currentData.cost / 1.5)
+    self.sellPrice = math.floor(currentData.cost / 1.2)
 end
 
 function Module:sell()
@@ -149,7 +149,7 @@ return {
             element = RenderModule.new(elementProperties),
             data = data,
             tableIndex = UnitIdCounter,
-            sellPrice = math.floor(data.upgrades[1].cost / 1.5),
+            sellPrice = data.upgrades[1].cost,
         }, Module)
 
         newUnit.currentUpgrade = 1

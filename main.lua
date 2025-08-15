@@ -42,8 +42,8 @@ function love.keypressed(key)
        print(extra.getScaledMousePos())
     elseif key == "e" and CurrentGameData.gameStarted then
         UIModule.startPlacement("basicturret")
-    elseif key == "r" and CurrentGameData.gameStarted then
-        GameplayLoopModule.stopGame()
+    -- elseif key == "r" and CurrentGameData.gameStarted then
+    --     GameplayLoopModule.stopGame()
     elseif key == "f11" then
         local fullscreen = love.window.getFullscreen()
         love.window.setFullscreen(not fullscreen)
