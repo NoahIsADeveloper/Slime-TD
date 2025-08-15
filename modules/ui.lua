@@ -231,6 +231,7 @@ function Module.mousepressed(mouseButton)
         end
 
         if Module.CurrentSceneData.exitButton:isHovering() and mouseButton == 1 then
+            love.window.setFullscreen(false)
             love.event.quit()
         end
     elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then

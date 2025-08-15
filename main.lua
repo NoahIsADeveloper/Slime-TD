@@ -54,3 +54,7 @@ function love.mousepressed(_, _, button)
     SoundModule.playSound("click.wav", .5, true)
     UIModule.mousepressed(button)
 end
+
+function love.quit()
+    love.window.setFullscreen(false)
+end
