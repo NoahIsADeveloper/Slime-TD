@@ -11,6 +11,7 @@ Sound Effects https://freesound.org/ <br>
  - [turretshoot.wav](https://freesound.org/people/eardeer/sounds/402009/) <br>
  - [hyperturretshoot.wav](https://freesound.org/people/hotpin7/sounds/819269/) <br>
  - [moneygain.wav](https://freesound.org/people/LittleRobotSoundFactory/sounds/276106/) <br>
+ - [tick.wav](https://freesound.org/people/KorgMS2000B/sounds/54406/) <br>
 
 ## Official Links
 https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
