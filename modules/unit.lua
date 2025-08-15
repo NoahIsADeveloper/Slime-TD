@@ -18,29 +18,22 @@ local function findEnemyInRange(unit, range)
     local currentData = unit.data.upgrades[unit.currentUpgrade]
 
     for _, enemy in pairs(EnemyModule.getEnemies()) do
-        if enemy.element and enemy.data.health > 0 then
+        if not enemy.element or enemy.data.health < 0 then goto continue end
+        if enemy.data.hidden and not currentData.hiddenDetection then goto continue end
 
-            local canTarget = true
+        local dx = enemy.element.x - unit.element.x
+        local dy = enemy.element.y - unit.element.y
+        local dist = math.sqrt(dx * dx + dy * dy)
+        if dist > range then goto continue end
+        
+        local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
 
-            if enemy.data.hidden and not currentData.hiddenDetection then
-                canTarget = false
-            end
+        if progress < farthestProgress then goto continue end
 
-            if canTarget then
-                local dx = enemy.element.x - unit.element.x
-                local dy = enemy.element.y - unit.element.y
-                local dist = math.sqrt(dx * dx + dy * dy)
+        farthestProgress = progress
+        farthestEnemy = enemy
 
-                if dist <= range then
-                    local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
-
-                    if progress > farthestProgress then
-                       farthestProgress = progress
-                       farthestEnemy = enemy
-                   end
-                end
-            end
-        end
+        ::continue::
     end
 
     return farthestEnemy
@@ -89,24 +82,23 @@ end
 
 function Module:update()
     local currentData = self.data.upgrades[self.currentUpgrade]
+    if os.clock() - self.lastAttack < currentData.cooldown then return end
 
     local enemyInRange = findEnemyInRange(self, currentData.range)
-    if enemyInRange then
-        local dx = enemyInRange.element.x - self.element.x
-        local dy = enemyInRange.element.y - self.element.y
+    if not enemyInRange then return end
 
-        ---@diagnostic disable-next-line: deprecated
-        local angle = math.atan2(dy, dx)
+    local dx = enemyInRange.element.x - self.element.x
+    local dy = enemyInRange.element.y - self.element.y
 
-        if os.clock() - self.lastAttack >= currentData.cooldown then
-            SoundModule.playSound(currentData.soundName, 0.5, true)
-            CurrentGameData.cash = CurrentGameData.cash + 1
+    ---@diagnostic disable-next-line: deprecated
+    local angle = math.atan2(dy, dx)
 
-            enemyInRange:takeDamage(currentData.damage)
-            self.lastAttack = os.clock()
-            self.element.rot = angle
-        end
-    end
+    SoundModule.playSound(currentData.soundName, 0.5, true)
+    CurrentGameData.cash = CurrentGameData.cash + 1
+
+    enemyInRange:takeDamage(currentData.damage)
+    self.lastAttack = os.clock()
+    self.element.rot = angle
 end
 
 function Module:remove()
