@@ -16,7 +16,7 @@ Sound Effects: <br>
  - [splashintro.wav](https://freesound.org/people/nikerk/sounds/764513/) <br>
 <br>
 Music: <br>
- - [mainmenu.wav](https://freesound.org/people/Xythe/sounds/516912/) <br>
+ - [mainmenu.ogg](https://freesound.org/people/Xythe/sounds/516912/) <br>
 
 ## Official Links
 https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
