@@ -4,7 +4,7 @@
 </p>
 
 ## Credits
-Read [CREDITS.md]("../CREDITS.md")
+Read [CREDITS.md]("./CREDITS.md")
 
 ## Official Links
 https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
