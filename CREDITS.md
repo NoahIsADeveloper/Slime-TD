@@ -1,3 +1,6 @@
+## README
+[README.md](README.md)
+
 ## Credits
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
 
@@ -12,5 +15,3 @@ Sound Effects:
  
 Music:
  - [mainmenu.ogg](https://freesound.org/people/Xythe/sounds/516912/) <br>
-
-[README.md](README.md)
