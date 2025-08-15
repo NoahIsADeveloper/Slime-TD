@@ -1,5 +1,6 @@
 local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
+local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
 local MapModule = require("modules.map")
 local extra = require("modules.extra")
@@ -81,6 +82,8 @@ function Module:sell()
     if not CurrentGameData.gameStarted then return end
     CurrentGameData.cash = CurrentGameData.cash + self.sellPrice
 
+    SoundModule.playSound("moneygain.wav", 1, true)
+
     self:remove()
 end
 
@@ -96,6 +99,7 @@ function Module:update()
         local angle = math.atan2(dy, dx)
 
         if os.clock() - self.lastAttack >= currentData.cooldown then
+            SoundModule.playSound(currentData.soundName, 0.5, true)
             CurrentGameData.cash = CurrentGameData.cash + 1
 
             enemyInRange:takeDamage(currentData.damage)
@@ -136,7 +140,7 @@ return {
         local elementProperties = {
             type = "sprite",
             spritePath = data.upgrades[1].spritePath,
-            zindex = 1,
+            zindex = 2,
             x = x,
             y = y,
         }

@@ -1,5 +1,6 @@
 local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
+local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
 local UnitModule = require("modules.unit")
 local extra = require("modules.extra")
@@ -38,16 +39,23 @@ function Module.startFadeIn(callback)
 end
 
 function Module.startFadeOut(callback)
+    if Module.CurrentScene == "splashscreen" then SoundModule.playSound("splashintro.wav", .35, false) end
+
     Module.fade.state = "out"
     Module.fade.callback = callback
     Module.transitionElement.alpha = 1
 end
 
 function Module.loadScene(scene, animate)
+    local loaded = false
     local function actuallyLoadScene()
+        if loaded then return end
+
         local pathModule = "modules.data.ui-scenes." .. scene
         local path = "modules/data/ui-scenes/" .. scene .. ".lua"
         if not love.filesystem.getInfo(path) then return end
+
+        loaded = true
 
         for _, element in pairs(Module.CurrentSceneData) do
             element:remove()
@@ -57,8 +65,20 @@ function Module.loadScene(scene, animate)
         Module.CurrentScene = scene
 
         local sceneData = require(pathModule)
-        for index, elementProperties in pairs(sceneData) do
+        for index, elementProperties in pairs(sceneData.elements) do
             Module.CurrentSceneData[index] = RenderModule.new(elementProperties)
+        end
+
+        if sceneData.musicName then
+            if sceneData.musicName == SoundModule.activeMusicName then
+                return
+            else
+                SoundModule.stopMusic()
+            end
+
+            SoundModule.playMusic(sceneData.musicName, true)
+        else
+            SoundModule.stopMusic()
         end
     end
 
@@ -160,6 +180,7 @@ function Module.startPlacement(unitType)
     if not love.filesystem.getInfo(path) then return end
     local data = require(pathModule).upgrades[1]
 
+    Module.currentlySelectedUnit = nil
     UnitPlacementData.currentlyPlacing = true
 
     local x, y = extra.getScaledMousePos()
@@ -205,19 +226,23 @@ function Module.mousepressed(mouseButton)
     -- end
 
     if Module.CurrentScene == "mainmenu" and not CurrentGameData.gameStarted then
-        if Module.CurrentSceneData.playButton:isClicked() and mouseButton == 1 then
+        if Module.CurrentSceneData.playButton:isHovering() and mouseButton == 1 then
             require("modules.gameplayLoop").startGame("normal", "grasslands")
         end
+
+        if Module.CurrentSceneData.exitButton:isHovering() and mouseButton == 1 then
+            love.event.quit()
+        end
     elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then
-        if Module.CurrentSceneData.backToMenuButton:isClicked() then
+        if Module.CurrentSceneData.backToMenuButton:isHovering() then
             Module.loadScene("mainmenu", true)
         end
     elseif Module.CurrentScene == "ingame" then
-        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeUnitButtonBackground:isClicked() and mouseButton == 1 and Module.CurrentSceneData.upgradeUnitButtonBackground.alpha == 1 then
+        if Module.currentlySelectedUnit and Module.CurrentSceneData.upgradeUnitButtonBackground:isHovering() and mouseButton == 1 and Module.CurrentSceneData.upgradeUnitButtonBackground.alpha == 1 then
             Module.currentlySelectedUnit:upgrade()
         end
 
-        if Module.currentlySelectedUnit and Module.CurrentSceneData.sellUnitButtonBackground:isClicked() and mouseButton == 1 then
+        if Module.currentlySelectedUnit and Module.CurrentSceneData.sellUnitButtonBackground:isHovering() and mouseButton == 1 then
             Module.currentlySelectedUnit:sell()
         end
     end
@@ -226,7 +251,7 @@ function Module.mousepressed(mouseButton)
         local clicked = false
 
         for _, unit in pairs(UnitModule.getUnits()) do
-            if unit.element:isClicked() then
+            if unit.element:isHovering() and not Module.CurrentSceneData.upgradeUnitButtonBackground:isHovering() then
                 clicked = true
 
                 if Module.rangeVisualizer then
@@ -303,7 +328,7 @@ function Module.update(deltaTime)
     end)
 
     for _, enemy in ipairs(enemies) do
-        if enemy.element:isClicked() and not hovering then
+        if enemy.element:isHovering() and not hovering then
             hovering = true
 
             Module.CurrentSceneData.enemyHealthCounter.text = enemy.data.health .. "/" .. enemy.data.maxHealth .. " HP"
@@ -360,11 +385,25 @@ function Module.update(deltaTime)
         if Module.currentlySelectedUnit then
             local x, y = Module.currentlySelectedUnit.element.x, Module.currentlySelectedUnit.element.y
 
-            Module.CurrentSceneData.upgradeUnitButtonBackground.x, Module.CurrentSceneData.upgradeUnitButtonBackground.y = x, y - 65
-            Module.CurrentSceneData.upgradeUnitButton.x, Module.CurrentSceneData.upgradeUnitButton.y = x, y - 65
+            local upgradeButton = Module.CurrentSceneData.upgradeUnitButton
+            local upgradeBG = Module.CurrentSceneData.upgradeUnitButtonBackground
+            local sellButton = Module.CurrentSceneData.sellUnitButton
+            local sellBG = Module.CurrentSceneData.sellUnitButtonBackground
 
-            Module.CurrentSceneData.sellUnitButtonBackground.x, Module.CurrentSceneData.sellUnitButtonBackground.y = x, y + 60
-            Module.CurrentSceneData.sellUnitButton.x, Module.CurrentSceneData.sellUnitButton.y = x, y + 60
+            local upgradeWidth = upgradeBG.sprite:getWidth() * upgradeBG.scaleX
+            local upgradeHeight = upgradeBG.sprite:getHeight() * upgradeBG.scaleY
+            local sellWidth = sellBG.sprite:getWidth() * sellBG.scaleX
+            local sellHeight = sellBG.sprite:getHeight() * sellBG.scaleY
+
+            local upgradeX = extra.clamp(x, upgradeWidth / 2, 800 - upgradeWidth / 2)
+            local upgradeY = extra.clamp(y - 65, upgradeHeight / 2, 600 - upgradeHeight / 2)
+            upgradeBG.x, upgradeBG.y = upgradeX, upgradeY
+            upgradeButton.x, upgradeButton.y = upgradeX, upgradeY
+
+            local sellX = extra.clamp(x, sellWidth / 2, 800 - sellWidth / 2)
+            local sellY = extra.clamp(y + 60, sellHeight / 2, 600 - sellHeight / 2)
+            sellBG.x, sellBG.y = sellX, sellY
+            sellButton.x, sellButton.y = sellX, sellY
         end
 
         local alpha = (Module.currentlySelectedUnit and 1 or 0)
@@ -376,14 +415,16 @@ function Module.update(deltaTime)
             if Module.currentlySelectedUnit.currentUpgrade == #Module.currentlySelectedUnit.data.upgrades then alpha = 0 end
             if Module.currentlySelectedUnit.data.upgrades[math.min(Module.currentlySelectedUnit.currentUpgrade + 1, #Module.currentlySelectedUnit.data.upgrades)].cost > CurrentGameData.cash then alpha = 0.5 end
 
-            Module.CurrentSceneData.upgradeUnitButton.text = "Upgrade ($" .. Module.currentlySelectedUnit.data.upgrades[Module.currentlySelectedUnit.currentUpgrade + 1].cost .. ")"
-            Module.CurrentSceneData.sellUnitButton.text = "Sell ($" .. Module.currentlySelectedUnit.sellPrice .. ")"
+            if Module.currentlySelectedUnit.currentUpgrade + 1 <= #Module.currentlySelectedUnit.data.upgrades then
+                Module.CurrentSceneData.upgradeUnitButton.text = "Upgrade ($" .. Module.currentlySelectedUnit.data.upgrades[Module.currentlySelectedUnit.currentUpgrade + 1].cost .. ")"
+                Module.CurrentSceneData.sellUnitButton.text = "Sell ($" .. Module.currentlySelectedUnit.sellPrice .. ")"
+            end
         end
 
         Module.CurrentSceneData.upgradeUnitButtonBackground.alpha = alpha
         Module.CurrentSceneData.upgradeUnitButton.alpha = alpha
 
-        if Module.CurrentSceneData.upgradeUnitButtonBackground:isClicked() then
+        if Module.CurrentSceneData.upgradeUnitButtonBackground:isHovering() then
             Module.CurrentSceneData.upgradeUnitButtonBackground.rot = math.sin(time * 2.5) / 20
             Module.CurrentSceneData.upgradeUnitButton.rot = math.sin(time * 2.5) / 20
         else
@@ -391,7 +432,7 @@ function Module.update(deltaTime)
             Module.CurrentSceneData.upgradeUnitButton.rot = 0
         end
 
-        if Module.CurrentSceneData.sellUnitButtonBackground:isClicked() then
+        if Module.CurrentSceneData.sellUnitButtonBackground:isHovering() then
             Module.CurrentSceneData.sellUnitButtonBackground.rot = math.sin(time * 2.5) / 20
             Module.CurrentSceneData.sellUnitButton.rot = math.sin(time * 2.5) / 20
         else
@@ -420,13 +461,17 @@ function Module.update(deltaTime)
 
         local sin = math.sin(time) / 20
 
-        local rot = (Module.CurrentSceneData.playButton:isClicked() and -sin or 0)
+        local rot = (Module.CurrentSceneData.playButton:isHovering() and -sin or 0)
         Module.CurrentSceneData.playButtonLabel.rot = rot
         Module.CurrentSceneData.playButton.rot = rot
+
+        local rot = (Module.CurrentSceneData.exitButton:isHovering() and -sin or 0)
+        Module.CurrentSceneData.exitButtonLabel.rot = rot
+        Module.CurrentSceneData.exitButton.rot = rot
     elseif not CurrentGameData.gameStarted and Module.CurrentScene == "resultscreen" then
         local sin = math.sin(time) / 20
 
-        local rot = (Module.CurrentSceneData.backToMenuButton:isClicked() and sin or 0)
+        local rot = (Module.CurrentSceneData.backToMenuButton:isHovering() and sin or 0)
         Module.CurrentSceneData.backToMenuButtonLabel.rot = rot
         Module.CurrentSceneData.backToMenuButton.rot = rot
 

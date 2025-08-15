@@ -1,5 +1,6 @@
 local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
+local SoundModule = require("modules.sound")
 local extra = require("modules.extra")
 
 local Enemies = {}
@@ -26,6 +27,8 @@ local function catmullRom(p0, p1, p2, p3, t)
 end
 
 function Module:takeDamage(damage)
+    SoundModule.playSound("hit.wav", 0.5, true)
+
     self.data.health = self.data.health - damage
     self.data.flashTimer = os.clock()
 end
@@ -100,6 +103,8 @@ function Module:update(deltaTime)
         self.data.currentWaypoint = i + 1
 
         if self.data.currentWaypoint >= #waypoints then
+            SoundModule.playSound("hit.wav", 0.5, true)
+
             CurrentGameData.baseHealth = CurrentGameData.baseHealth - self.data.health
             self:remove()
 

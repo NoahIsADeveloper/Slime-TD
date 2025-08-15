@@ -13,7 +13,7 @@ function Module:remove()
     self = nil
 end
 
-function Module:isClicked()
+function Module:isHovering()
     if self.type == "sprite" then
         local mx, my = extra.getScaledMousePos()
 

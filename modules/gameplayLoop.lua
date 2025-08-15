@@ -1,4 +1,5 @@
 local CurrentGameData = require("modules.currentGameData")
+local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
 local UnitModule = require("modules.unit")
 local MapModule = require("modules.map")
@@ -10,17 +11,24 @@ local waveCoroutine
 
 local function waitSeconds(seconds, updateWaveTimer)
     local timer = 0
+    local lastTick = seconds + 1
 
     if updateWaveTimer then CurrentGameData.waveTimer = math.ceil(seconds) end
 
     while timer < seconds do
-        local dt = coroutine.yield()
-        if not dt then dt = 0 end
+        local deltaTime = coroutine.yield()
+        if not deltaTime then deltaTime = 0 end
 
-        timer = timer + dt
+        timer = timer + deltaTime
 
         if updateWaveTimer then
-            CurrentGameData.waveTimer = math.max(0, math.ceil(seconds - timer))
+            local waveTimer = math.ceil(seconds - timer)
+            CurrentGameData.waveTimer = math.max(0, waveTimer)
+
+            if waveTimer < lastTick then
+                SoundModule.playSound("tick.wav", 1, true)
+                lastTick = waveTimer
+            end
         end
     end
 
@@ -52,8 +60,9 @@ function Module.startGame(difficulty, map)
     MapModule.load(map)
 
     waveCoroutine = coroutine.create(function()
+        waitSeconds(15, true)
+
         for index, wave in ipairs(CurrentGameData.waves) do
-            waitSeconds(5, true)
             CurrentGameData.currentWave = index
 
             for _, enemyGroup in ipairs(wave.enemies) do
@@ -67,7 +76,10 @@ function Module.startGame(difficulty, map)
                 waitSeconds(0.1, false)
             end
 
-            CurrentGameData.cash = CurrentGameData.cash + (index * 150)
+            SoundModule.playSound("moneygain.wav", 1, true)
+            CurrentGameData.cash = CurrentGameData.cash + (index * 50)
+
+            waitSeconds(5, true)
         end
 
         CurrentGameData.gameWon = true

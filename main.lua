@@ -3,6 +3,7 @@
 local GameplayLoopModule = require("modules.gameplayLoop")
 local CurrentGameData = require("modules.currentGameData")
 local RenderModule = require("modules.render")
+local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
 local UnitModule = require("modules.unit")
 local UIModule = require("modules.ui")
@@ -17,11 +18,13 @@ function love.load()
     font:setFilter("nearest", "nearest")
     love.graphics.setFont(font)
 
+    SoundModule.load()
     UIModule.loadScene("splashscreen", true)
 end
 
 function love.update(deltaTime)
     UIModule.update(deltaTime)
+    SoundModule.update()
 
     if not CurrentGameData.gameStarted then return end
 
@@ -48,5 +51,6 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(_, _, button)
+    SoundModule.playSound("click.wav", .5, true)
     UIModule.mousepressed(button)
 end
