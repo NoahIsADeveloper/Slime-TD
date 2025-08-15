@@ -1,4 +1,3 @@
-## README
 [README.md](README.md)
 
 ## Credits
