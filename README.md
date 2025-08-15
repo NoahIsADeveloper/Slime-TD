@@ -6,7 +6,9 @@
 ## Special Credits
 Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
 Sound Effects https://freesound.org/ <br>
- • [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/) <br>
+ - [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/) <br>
+ - [hit.wav](https://freesound.org/people/DmitryKutin0/sounds/806263/) <br>
+ - [turretshoot.wav](https://freesound.org/people/eardeer/sounds/402009/) <br>
 
 ## Official Links
 https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
