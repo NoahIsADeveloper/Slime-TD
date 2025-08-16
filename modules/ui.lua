@@ -239,25 +239,9 @@ function Module.mousepressed(mouseButton)
                 require("modules.gameplayLoop").startGame("normal", "grasslands")
             end
 
-            if Module.CurrentSceneData.settingsButton:isHovering() and mouseButton == 1 then
-                Module.loadScene("settingsmenu", true)
-            end
-
-            if Module.CurrentSceneData.shopButton:isHovering() and mouseButton == 1 then
-                Module.loadScene("shopmenu", true)
-            end
-
             if Module.CurrentSceneData.exitButton:isHovering() and mouseButton == 1 then
                 love.window.setFullscreen(false)
                 love.event.quit()
-            end
-        elseif Module.CurrentScene == "settingsmenu" and not CurrentGameData.gameStarted then
-            if Module.CurrentSceneData.backButton:isHovering() and mouseButton == 1 then
-                Module.loadScene("mainmenu", true)
-            end
-        elseif Module.CurrentScene == "shopmenu" and not CurrentGameData.gameStarted then
-            if Module.CurrentSceneData.backButton:isHovering() and mouseButton == 1 then
-                Module.loadScene("mainmenu", true)
             end
         elseif Module.CurrentScene == "resultscreen" and not CurrentGameData.gameStarted and mouseButton == 1 then
             if Module.CurrentSceneData.backToMenuButton:isHovering() then
@@ -495,26 +479,6 @@ function Module.update(deltaTime)
         local rot = (Module.CurrentSceneData.exitButton:isHovering() and -sin or 0)
         Module.CurrentSceneData.exitButtonLabel.rot = rot
         Module.CurrentSceneData.exitButton.rot = rot
-
-        local rot = (Module.CurrentSceneData.settingsButton:isHovering() and -sin or 0)
-        Module.CurrentSceneData.settingsButtonLabel.rot = rot
-        Module.CurrentSceneData.settingsButton.rot = rot
-
-        local rot = (Module.CurrentSceneData.shopButton:isHovering() and -sin or 0)
-        Module.CurrentSceneData.shopButtonLabel.rot = rot
-        Module.CurrentSceneData.shopButton.rot = rot
-    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "settingsmenu" then
-        local sin = math.sin(time) / 20
-
-        local rot = (Module.CurrentSceneData.backButton:isHovering() and -sin or 0)
-        Module.CurrentSceneData.backButtonLabel.rot = rot
-        Module.CurrentSceneData.backButton.rot = rot
-    elseif not CurrentGameData.gameStarted and Module.CurrentScene == "shopmenu" then
-        local sin = math.sin(time) / 20
-
-        local rot = (Module.CurrentSceneData.backButton:isHovering() and -sin or 0)
-        Module.CurrentSceneData.backButtonLabel.rot = rot
-        Module.CurrentSceneData.backButton.rot = rot
     elseif not CurrentGameData.gameStarted and Module.CurrentScene == "resultscreen" then
         local sin = math.sin(time) / 20
 
