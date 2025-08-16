@@ -29,7 +29,10 @@ end
 function Module:takeDamage(damage)
     SoundModule.playSound("hit.wav", 0.5, true)
 
-    self.data.health = self.data.health - damage
+    local reduction = math.min(self.data.damageReduction, 0.9)
+    local finalDamage = math.floor(damage * (1 - reduction))
+
+    self.data.health = self.data.health - finalDamage
     self.data.flashTimer = os.clock()
 end
 

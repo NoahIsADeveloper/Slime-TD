@@ -4,4 +4,5 @@ return {
     killReward = 50,
     maxHealth = 200,
     moveSpeed = 100,
+    damageReduction = 0
 }

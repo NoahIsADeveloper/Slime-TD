@@ -76,10 +76,12 @@ function Module.startGame(difficulty, map)
                 waitSeconds(0.1, false)
             end
 
-            SoundModule.playSound("moneygain.wav", 1, true)
-            CurrentGameData.cash = CurrentGameData.cash + (index * 50)
+            if #CurrentGameData.waves ~= index then
+                SoundModule.playSound("moneygain.wav", 1, true)
+                CurrentGameData.cash = CurrentGameData.cash + (index * 50)
 
-            waitSeconds(5, true)
+                waitSeconds(5, true)
+            end
         end
 
         CurrentGameData.gameWon = true

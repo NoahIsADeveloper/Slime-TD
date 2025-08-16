@@ -55,7 +55,7 @@ function love.keypressed(key)
     --     GameplayLoopModule.stopGame()
     elseif key == "f11" then
         local fullscreen = love.window.getFullscreen()
-        love.window.setFullscreen(not fullscreen)
+        love.window.setFullscreen(not fullscreen, "desktop")
     end
 end
 

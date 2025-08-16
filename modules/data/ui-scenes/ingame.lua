@@ -55,7 +55,7 @@ return {
             scaleY = .6
         },
 
-        ["upgradeUnitButton"] = {
+        ["upgradeUnitButtonLabel"] = {
             color = {r = 73, g = 94, b = 73},
             text = "Upgrade -($)",
             type = "text",
@@ -63,7 +63,7 @@ return {
             scaleY = 0.5,
             zindex = 103
         },
-        ["upgradeUnitButtonBackground"] = {
+        ["upgradeUnitButton"] = {
             color = {r=255, g=255, b=255},
             spritePath = "assets/sprites/button.png",
             scaleX = 0.5,
@@ -72,7 +72,7 @@ return {
             zindex = 102
         },
 
-        ["sellUnitButton"] = {
+        ["sellUnitButtonLabel"] = {
             color = {r = 200, g = 200, b = 200},
             text = "Sell +($)",
             type = "text",
@@ -80,7 +80,7 @@ return {
             scaleY = 0.4,
             zindex = 103
         },
-        ["sellUnitButtonBackground"] = {
+        ["sellUnitButton"] = {
             color = {r=255, g=0, b=0},
             spritePath = "assets/sprites/button.png",
             scaleX = 0.4,

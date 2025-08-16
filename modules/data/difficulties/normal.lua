@@ -18,7 +18,7 @@ return {
         },
         [4] = {
             enemies = {
-                {type = "slime", count = 8, spawnInterval = .5, hidden = false},
+                {type = "slime", count = 9, spawnInterval = .5, hidden = false},
             }
         },
         [5] = {
@@ -144,5 +144,74 @@ return {
                 {type = "speedyslime", count = 6, spawnInterval = 0.3, hidden = true},
             }
         },
+        [22] = {
+            enemies = {
+                {type = "giantslime", count = 2, spawnInterval = 2, hidden = false},
+                {type = "armoredslime", count = 6, spawnInterval = 0.5, hidden = false},
+                {type = "lightningslime", count = 3, spawnInterval = 0.3, hidden = false},
+                {type = "giantlightningslime", count = 1, spawnInterval = 2, hidden = false},
+            }
+        },
+        [23] = {
+            enemies = {
+                {type = "giantslime", count = 3, spawnInterval = 1.5, hidden = false},
+                {type = "armoredslime", count = 8, spawnInterval = 0.4, hidden = false},
+                {type = "lightningslime", count = 10, spawnInterval = 0.25, hidden = false},
+            }
+        },
+        [24] = {
+            enemies = {
+                {type = "giantarmoredslime", count = 1, spawnInterval = 3, hidden = false},
+                {type = "giantslime", count = 3, spawnInterval = 2, hidden = false},
+                {type = "speedyslime", count = 15, spawnInterval = 0.3, hidden = false},
+            }
+        },
+        [25] = {
+            enemies = {
+                {type = "giantlightningslime", count = 2, spawnInterval = 0.7, hidden = false},
+                {type = "giantarmoredslime", count = 1, spawnInterval = 3, hidden = false},
+                {type = "armoredslime", count = 10, spawnInterval = 0.4, hidden = false},
+                {type = "speedyslime", count = 12, spawnInterval = 0.25, hidden = false},
+            }
+        },
+        [26] = {
+            enemies = {
+                {type = "giantslime", count = 5, spawnInterval = 1.5, hidden = false},
+                {type = "giantarmoredslime", count = 1, spawnInterval = 2.5, hidden = false},
+                {type = "lightningslime", count = 12, spawnInterval = 0.25, hidden = false},
+            }
+        },
+        [27] = {
+            enemies = {
+                {type = "giantlightningslime", count = 2, spawnInterval = 0.5, hidden = false},
+                {type = "giantslime", count = 4, spawnInterval = 1.5, hidden = false},
+                {type = "armoredslime", count = 12, spawnInterval = 0.4, hidden = false},
+                {type = "speedyslime", count = 15, spawnInterval = 0.3, hidden = false},
+            }
+        },
+        [28] = {
+            enemies = {
+                {type = "giantarmoredslime", count = 2, spawnInterval = 3, hidden = false},
+                {type = "giantslime", count = 6, spawnInterval = 1.5, hidden = false},
+                {type = "lightningslime", count = 15, spawnInterval = 0.25, hidden = false},
+            }
+        },
+        [29] = {
+            enemies = {
+                {type = "giantlightningslime", count = 3, spawnInterval = 0.6, hidden = false},
+                {type = "giantarmoredslime", count = 2, spawnInterval = 3, hidden = false},
+                {type = "giantslime", count = 5, spawnInterval = 1.5, hidden = false},
+                {type = "speedyslime", count = 20, spawnInterval = 0.25, hidden = false},
+            }
+        },
+        [30] = {
+            enemies = {
+                {type = "giantlightningslime", count = 4, spawnInterval = 0.4, hidden = false},
+                {type = "giantarmoredslime", count = 2, spawnInterval = 3, hidden = false},
+                {type = "giantslime", count = 6, spawnInterval = 1.5, hidden = false},
+                {type = "armoredslime", count = 15, spawnInterval = 0.4, hidden = false},
+                {type = "speedyslime", count = 25, spawnInterval = 0.25, hidden = false},
+            }
+        }
     }
 }
