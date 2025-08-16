@@ -58,7 +58,6 @@ function Module.setupButton(element, label, callback)
     })
 end
 
-
 function Module.loadScene(scene, animate)
     if Module.transitioning then return end
 
@@ -68,6 +67,12 @@ function Module.loadScene(scene, animate)
         Module.UnitPlacementData.placeholder.element:remove()
         Module.UnitPlacementData.currentlyPlacing = false
     end
+
+    for _, button in pairs(Module.buttons) do
+        button.callback = nil
+    end
+
+    Module.buttons = {}
 
     Module.transitioning = true
 
@@ -85,14 +90,8 @@ function Module.loadScene(scene, animate)
             element:remove()
         end
 
-        for _, button in pairs(Module.buttons) do
-            button.callback = nil
-        end
-
         Module.CurrentSceneData = {}
         Module.CurrentScene = scene
-
-        Module.buttons = {}
 
         local sceneData = require(pathModule)
         for index, elementProperties in pairs(sceneData.elements) do
@@ -279,7 +278,6 @@ end
 
 function Module.mousepressed(mouseButton)
     if not Module.transitioning then
-        --%note buggy as hell, don't wanna deal with it rn
         if mouseButton == 1 and not Module.splashScreenComplete then
             Module.splashScreenComplete = true
             Module.loadScene("mainmenu", true)
@@ -292,7 +290,7 @@ function Module.mousepressed(mouseButton)
         end
     end
 
-    if mouseButton == 1 and not UnitPlacementData.currentlyPlacing then
+    if mouseButton == 1 and not UnitPlacementData.currentlyPlacing and Module.CurrentScene == "ingame" then
         local clicked = false
 
         for _, unit in pairs(UnitModule.getUnits()) do
@@ -341,7 +339,6 @@ function Module.mousepressed(mouseButton)
         if mouseButton == 1 then
             if not UnitPlacementData.canPlace then return end
             UnitModule.new(UnitPlacementData.placeholder.type, UnitPlacementData.placeholder.element.x, UnitPlacementData.placeholder.element.y)
-
         elseif mouseButton == 2 then
         else
             return
@@ -372,8 +369,8 @@ function Module.update(deltaTime)
         local sin = math.sin(os.clock() * 2.5) / 20
 
         if button.element:isHovering() then
-            button.element.rot = sin
-            if button.label then button.label.rot = sin end
+            button.element.rot = -sin
+            if button.label then button.label.rot = -sin end
         else
             button.element.rot = 0
             if button.label then button.label.rot = 0 end

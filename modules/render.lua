@@ -14,7 +14,7 @@ function Module:remove()
 end
 
 function Module:isHovering()
-    if self.type == "sprite" then
+    if self.type == "sprite" and self.alpha ~= 0 then
         local mx, my = extra.getScaledMousePos()
 
         local sprite = self.sprite

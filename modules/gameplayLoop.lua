@@ -85,8 +85,6 @@ function Module.startGame(difficulty, map)
         end
 
         CurrentGameData.gameWon = true
-
-        waitSeconds(3, true)
         Module.stopGame()
     end)
 
@@ -115,6 +113,12 @@ function Module.stopGame()
     CurrentGameData.waves = nil
 
     waveCoroutine = nil
+
+    if CurrentGameData.gameWon then
+        SoundModule.playSound("victory.wav", 0.5, false)
+    else
+        SoundModule.playSound("lose.wav", 0.5, false)
+    end
 
     UIModule.loadScene("resultscreen", false)
 end

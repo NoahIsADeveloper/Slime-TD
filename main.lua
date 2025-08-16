@@ -51,8 +51,6 @@ function love.keypressed(key)
 
     if key == "o" then
        print(extra.getScaledMousePos())
-    -- elseif key == "r" and CurrentGameData.gameStarted then
-    --     GameplayLoopModule.stopGame()
     elseif key == "f11" then
         local fullscreen = love.window.getFullscreen()
         love.window.setFullscreen(not fullscreen, "desktop")
