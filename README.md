@@ -8,7 +8,7 @@ Read [CREDITS.md](CREDITS.md)
 
 ## Official Links
 [Github Releases](https://github.com/ShibaTheDeveloper/Slime-TD/releases) <br>
-[Itch.Io](https://shibathedeveloper.itch.io/slime-td)
+[Itch.io](https://shibathedeveloper.itch.io/slime-td)
 
 ## Development Setup (Windows Only)
 **Note:** If you just want to play the game, use the official links above.
