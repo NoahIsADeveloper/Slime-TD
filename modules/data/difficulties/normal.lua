@@ -2,7 +2,7 @@ return {
     waves = {
         [1] = {
             enemies = {
-                {type = "giantlightningslime", count = 3, spawnInterval = 1, hidden = false},
+                {type = "slime", count = 3, spawnInterval = 1, hidden = false},
             }
         },
         [2] = {
