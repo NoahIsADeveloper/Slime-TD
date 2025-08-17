@@ -32,7 +32,7 @@ Read [CREDITS.md](CREDITS.md)
 6. Copy `love.exe` into the same folder.
 7. Open Command Prompt with administrator permissions.
 8. Run the following command (replace `SlimeTD` with your `.love` file name):
-   `copy /b love.exe+SlimeTD.love SlimeTD.exe`
+   `copy /b love.exe+SlimeTD.love play.exe`
 9. Copy all DLLs that came with `love.exe` into the same folder.
 
 ## Troubleshooting Build
