@@ -17,6 +17,7 @@ Sound Effects:
  - [splitslime.wav](https://freesound.org/people/Breviceps/sounds/445109/) <br>
  - [snipershoot.wav](https://freesound.org/people/EMSIarma/sounds/108852/) <br>
  - [heavysnipershoot.wav](https://freesound.org/people/SuperPhat/sounds/514228/) <br>
+ - [lasersnipershoot.wav](https://freesound.org/people/newlocknew/sounds/557514/) <br>
  
 Music:
  - [mainmenu.ogg](https://freesound.org/people/Xythe/sounds/516912/) <br>
