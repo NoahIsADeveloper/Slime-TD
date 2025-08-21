@@ -9,6 +9,7 @@ local Module = {
     UnitPlacementData = {
         currentlyPlacing = false,
         canPlace = true,
+        cantPlaceReason = "",
 
         placeholder = nil
     },
@@ -30,7 +31,9 @@ local Module = {
     splashScreenComplete = false,
     splashTime = 0,
 
-    buttons = {}
+    buttons = {},
+
+    errorTextLastUpdated = 0,
 }
 
 local UnitPlacementData = Module.UnitPlacementData
@@ -190,7 +193,9 @@ function Module.checkCanPlace()
     UnitPlacementData.canPlace = true
 
     if UnitPlacementData.placeholder.data.cost > CurrentGameData.cash then
+        UnitPlacementData.cantPlaceReason = "$" .. UnitPlacementData.placeholder.data.cost - CurrentGameData.cash .. " missing to place this unit."
         UnitPlacementData.canPlace = false
+
         return
     end
 
@@ -206,7 +211,9 @@ function Module.checkCanPlace()
     local r, g, b = mask:getPixel(x, y)
 
     if not (r == 0 and g == 1 and b == 0) then
+        UnitPlacementData.cantPlaceReason = "Cannot place unit here."
         UnitPlacementData.canPlace = false
+
         return
     end
 
@@ -223,7 +230,9 @@ function Module.checkCanPlace()
         local ush = unit.element.sprite:getHeight() * usy
 
         if math.abs(x - ux) < (psw + usw) / 2 and math.abs(y - uy) < (psh + ush) / 2 then
+            UnitPlacementData.cantPlaceReason = "Cannot place units inside eachother."
             UnitPlacementData.canPlace = false
+
             break
         end
     end
@@ -337,7 +346,14 @@ function Module.mousepressed(mouseButton)
 
     if UnitPlacementData.currentlyPlacing and CurrentGameData.gameStarted then
         if mouseButton == 1 then
-            if not UnitPlacementData.canPlace then return end
+            if not UnitPlacementData.canPlace then
+                SoundModule.playSound("placementError.wav", 0.5, false)
+
+                Module.CurrentSceneData.unitPlacementErrorMessage.text = UnitPlacementData.cantPlaceReason
+                Module.errorTextLastUpdated = os.clock()
+
+                return
+            end
             UnitModule.new(UnitPlacementData.placeholder.type, UnitPlacementData.placeholder.element.x, UnitPlacementData.placeholder.element.y)
         elseif mouseButton == 2 then
         else
@@ -355,8 +371,11 @@ end
 
 function Module.update(deltaTime)
     local time = os.clock()
-
     local hovering = false
+
+    if time - Module.errorTextLastUpdated >= 3 and CurrentGameData.gameStarted and Module.CurrentScene == "ingame" then
+        Module.CurrentSceneData.unitPlacementErrorMessage.text = ""
+    end
 
     local enemies = {}
     for _, enemy in pairs(EnemyModule.getEnemies()) do

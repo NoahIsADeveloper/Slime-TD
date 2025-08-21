@@ -87,6 +87,17 @@ return {
             scaleY = 0.4,
             type = "sprite",
             zindex = 102
-        }
+        },
+
+       ["unitPlacementErrorMessage"] = {
+            color = {r=200, g=0, b=00},
+            scaleX = .8,
+            scaleY = .8,
+            type = "text",
+            text = "",
+            zindex = 102,
+            x = 400,
+            y = 500
+        },
     }
 }

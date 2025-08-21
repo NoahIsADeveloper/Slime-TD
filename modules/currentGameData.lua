@@ -6,6 +6,7 @@ return {
     currentMap = nil,
 
     timeSinceLastSpawn = 0,
+    timeScale = 1,
     waveTimer = 0,
 
     maxBaseHealth = 1500,
