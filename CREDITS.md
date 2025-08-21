@@ -14,7 +14,8 @@ Sound Effects:
  - [victory.wav](https://www.youtube.com/watch?v=wO9q4H49cGA) <br>
  - [placementError.wav](https://freesound.org/people/distillerystudio/sounds/327738/) <br>
  - [buttonHover.wav](https://freesound.org/people/florianreichelt/sounds/683101/) <br>
- - [splitSlime.wav](https://freesound.org/people/Breviceps/sounds/445109/) <br>
+ - [splitslime.wav](https://freesound.org/people/Breviceps/sounds/445109/) <br>
+ - [snipershoot.wav](https://freesound.org/people/SuperPhat/sounds/514228/) <br>
  
 Music:
  - [mainmenu.ogg](https://freesound.org/people/Xythe/sounds/516912/) <br>
