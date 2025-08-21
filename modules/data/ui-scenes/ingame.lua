@@ -36,6 +36,17 @@ return {
             scaleX = .6,
             scaleY = .6
         },
+
+        ["timeScale"] = {
+            color = {r = 255, g = 255, b = 255},
+            type = "text",
+            text = "Time Scale: 1",
+            x = 700,
+            y = 550,
+            zindex = 101,
+            scaleX = .6,
+            scaleY = .6
+        },
         ["enemyNameDisplay"] = {
             color = {r=255, g=255, b=255},
             type = "text",
@@ -55,7 +66,7 @@ return {
             scaleY = .6
         },
 
-        ["upgradeUnitButton"] = {
+        ["upgradeUnitButtonLabel"] = {
             color = {r = 73, g = 94, b = 73},
             text = "Upgrade -($)",
             type = "text",
@@ -63,7 +74,7 @@ return {
             scaleY = 0.5,
             zindex = 103
         },
-        ["upgradeUnitButtonBackground"] = {
+        ["upgradeUnitButton"] = {
             color = {r=255, g=255, b=255},
             spritePath = "assets/sprites/button.png",
             scaleX = 0.5,
@@ -72,7 +83,7 @@ return {
             zindex = 102
         },
 
-        ["sellUnitButton"] = {
+        ["sellUnitButtonLabel"] = {
             color = {r = 200, g = 200, b = 200},
             text = "Sell +($)",
             type = "text",
@@ -80,13 +91,24 @@ return {
             scaleY = 0.4,
             zindex = 103
         },
-        ["sellUnitButtonBackground"] = {
+        ["sellUnitButton"] = {
             color = {r=255, g=0, b=0},
             spritePath = "assets/sprites/button.png",
             scaleX = 0.4,
             scaleY = 0.4,
             type = "sprite",
             zindex = 102
-        }
+        },
+
+       ["unitPlacementErrorMessage"] = {
+            color = {r=200, g=0, b=00},
+            scaleX = .8,
+            scaleY = .8,
+            type = "text",
+            text = "",
+            zindex = 102,
+            x = 400,
+            y = 500
+        },
     }
 }

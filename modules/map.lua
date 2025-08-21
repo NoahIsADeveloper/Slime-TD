@@ -1,4 +1,4 @@
-local CurrentGameData = require("modules.currentGameData")
+local GameData = require("modules.data.gameData")
 local RenderModule = require("modules.render")
 
 local Module = {}
@@ -21,8 +21,8 @@ function Module.load(mapName)
 
     RenderModule.new(elementProperties)
 
-    CurrentGameData.currentMapMask = love.image.newImageData(newMap.mask)
-    CurrentGameData.currentMap = newMap
+    GameData.currentMapMask = love.image.newImageData(newMap.mask)
+    GameData.currentMap = newMap
 end
 
 return Module

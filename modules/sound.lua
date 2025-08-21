@@ -1,3 +1,6 @@
+local GameData = require("modules.data.gameData")
+local extra = require("modules.extra")
+
 local Module = {
     activeSources = {},
     loadedSounds = {},
@@ -45,9 +48,16 @@ function Module.playSound(name, volume, randomizePitch)
     local entry = Module.loadedSounds[name] or Module.loadSound(name)
     if not entry then return end
 
+    local basePitch = 1 * (GameData.gameStarted and GameData.timeScale or 1)
+
     local source = entry.source:clone()
-    if randomizePitch then source:setPitch(1 + (math.random(-1000, 1000) / 7500)) end
-    source:setVolume(volume or 1)
+    if randomizePitch then
+        local pitch = math.max(basePitch + (math.random(-1000, 1000) / 7500), 0.1)
+        source:setPitch(pitch)
+    else
+        source:setPitch(basePitch)
+    end
+    source:setVolume((volume or 1) * GameData.saveData.settings.soundVolumeMulti)
     source:play()
     table.insert(Module.activeSources, source)
 end
@@ -61,6 +71,7 @@ function Module.playMusic(filename, loop)
     end
 
     source:setLooping(loop ~= false)
+    source:setVolume(GameData.saveData.settings.musicVolumeMulti)
     source:play()
     Module.activeMusic = source
     Module.activeMusicName = filename

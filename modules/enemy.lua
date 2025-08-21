@@ -1,4 +1,4 @@
-local CurrentGameData = require("modules.currentGameData")
+local GameData = require("modules.data.gameData")
 local RenderModule = require("modules.render")
 local SoundModule = require("modules.sound")
 local extra = require("modules.extra")
@@ -27,10 +27,48 @@ local function catmullRom(p0, p1, p2, p3, t)
 end
 
 function Module:takeDamage(damage)
-    SoundModule.playSound("hit.wav", 0.5, true)
+    SoundModule.playSound("hit.wav", 0.25, true)
 
-    self.data.health = self.data.health - damage
+    local totalDamageReduction = self.data.damageReduction
+
+    if not self.data.hasAura then
+        for _, otherEnemy in pairs(Enemies) do
+            if otherEnemy.data.hasAura and otherEnemy ~= self then
+                local distance = math.sqrt(
+                    (self.element.x - otherEnemy.element.x)^2 +
+                    (self.element.y - otherEnemy.element.y)^2
+                )
+
+                if distance <= otherEnemy.data.auraRange then
+                    totalDamageReduction = totalDamageReduction + (otherEnemy.data.auraEffects.damageReduction or 0)
+                end
+            end
+        end
+    end
+
+    totalDamageReduction = math.min(totalDamageReduction, 0.9)
+    local finalDamage = math.floor(damage * (1 - totalDamageReduction))
+
+    self.data.health = self.data.health - finalDamage
     self.data.flashTimer = os.clock()
+
+    if self.data.health <= 0 then
+        if self.data.splitsInto then
+            SoundModule.playSound(self.data.splitSound, 1, true)
+
+            local splitsInto = self.data.splitsInto
+
+            for _, split in pairs(splitsInto) do
+                for _ = 1, split.amount do
+                    local newSplit = returnFunctions.new(split.type, split.hidden)
+                    newSplit.data.currentWaypoint = self.data.currentWaypoint
+
+                    local variation = (math.random() * 0.2) - 0.1
+                    newSplit.data.t = math.max(0, math.min(1, self.data.t + variation))
+                end
+            end
+        end
+    end
 end
 
 function Module:update(deltaTime)
@@ -45,7 +83,7 @@ function Module:update(deltaTime)
         self.element.alpha = (self.data.hidden and 0.6 or 1)
     end
 
-    local currentMap = CurrentGameData.currentMap
+    local currentMap = GameData.currentMap
     if not currentMap then self:remove() return end
 
     local waypoints = currentMap.waypoints
@@ -105,7 +143,7 @@ function Module:update(deltaTime)
         if self.data.currentWaypoint >= #waypoints then
             SoundModule.playSound("hit.wav", 0.5, true)
 
-            CurrentGameData.baseHealth = CurrentGameData.baseHealth - self.data.health
+            GameData.baseHealth = GameData.baseHealth - self.data.health
             self:remove()
 
             return
@@ -123,12 +161,43 @@ function Module:update(deltaTime)
     self.element.y = y
 
     local time = os.clock()
-    self.element.rot = math.sin(time * (self.data.moveSpeed / 25 + self.randomOffset)) / 5
+    self.element.rot = math.sin(time * ((self.data.moveSpeed * GameData.timeScale) / 25 + self.randomOffset)) / 5
+
+    if self.aura then
+        self.aura.x = x
+        self.aura.y = y
+
+        self.aura.rot = math.sin(time * 4) / 5
+    end
+
+    if self.data.hasAura and self.data.auraEffects.healAmount then
+        if time - self.data.lastHealTime >= self.data.auraEffects.healCooldown then
+            for _, otherEnemy in pairs(Enemies) do
+                local distance = math.sqrt(
+                    (self.element.x - otherEnemy.element.x)^2 +
+                    (self.element.y - otherEnemy.element.y)^2
+                )
+
+                if distance <= self.data.auraRange then
+                    otherEnemy.data.health = math.min(
+                        otherEnemy.data.health + self.data.auraEffects.healAmount,
+                        otherEnemy.data.maxHealth
+                    )
+                end
+            end
+
+            self.data.lastHealTime = time
+        end
+    end
 end
 
 function Module:remove()
-    if CurrentGameData.gameStarted and self.data.health <= 0 then
-        CurrentGameData.cash = CurrentGameData.cash + self.data.killReward
+    if GameData.gameStarted and self.data.health <= 0 then
+        GameData.cash = GameData.cash + self.data.killReward
+    end
+
+    if self.aura then
+        self.aura:remove()
     end
 
     if self.element then self.element:remove() end
@@ -136,7 +205,7 @@ function Module:remove()
     self = nil
 end
 
-return {
+returnFunctions = {
     new = function(enemyType, hidden)
         local pathModule = "modules.data.enemies." .. enemyType
         local path = "modules/data/enemies/" .. enemyType .. ".lua"
@@ -163,6 +232,21 @@ return {
         newEnemy.data.currentWaypoint = 0
         newEnemy.data.flashTimer = 0
         newEnemy.data.hidden = hidden
+        newEnemy.data.t = 0
+
+        if newEnemy.data.hasAura then
+            local scale = newEnemy.data.auraRange / 500
+
+            newEnemy.aura = RenderModule.new({
+                type = "sprite",
+                spritePath = "assets/sprites/rangevisualizer.png",
+                scaleX = scale,
+                scaleY = scale,
+                color = newEnemy.data.auraColor,
+                alpha = .7,
+                zindex = 2
+            })
+        end
 
         Enemies[EnemyIdCounter] = newEnemy
 
@@ -189,3 +273,5 @@ return {
         end
     end
 }
+
+return returnFunctions
