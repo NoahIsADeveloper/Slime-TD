@@ -11,6 +11,8 @@ return {
             range = 200,
             damage = 50,
             cost = 200,
+            turnSpeed = 2.5,
+            attackThreshold = 0.2,
             hiddenDetection = false,
         },
         [2] = {
@@ -21,6 +23,8 @@ return {
             range = 350,
             damage = 55,
             cost = 400,
+            turnSpeed = 3,
+            attackThreshold = 0.1,
             hiddenDetection = true,
         },
         [3] = {
@@ -31,6 +35,8 @@ return {
             range = 350,
             damage = 70,
             cost = 1250,
+            turnSpeed = 3,
+            attackThreshold = 0.1,
             hiddenDetection = true,
         },
         [4] = {
@@ -41,6 +47,8 @@ return {
             range = 350,
             damage = 70,
             cost = 2500,
+            turnSpeed = 4,
+            attackThreshold = 0.2,
             hiddenDetection = true,
         },
         [5] = {
@@ -50,7 +58,9 @@ return {
             cooldown = .5,
             range = 375,
             damage = 85,
-            cost = 3200,
+            cost = 3800,
+            turnSpeed = 5,
+            attackThreshold = 0.2,
             hiddenDetection = true,
         }
     }

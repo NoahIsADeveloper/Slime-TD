@@ -1,7 +1,7 @@
 ---@diagnostic disable: inject-field, undefined-field
 
 local GameplayLoopModule = require("modules.gameplayLoop")
-local CurrentGameData = require("modules.currentGameData")
+local GameData = require("modules.data.gameData")
 local SaveFileModule = require("modules.savefile")
 local RenderModule = require("modules.render")
 local SoundModule = require("modules.sound")
@@ -19,7 +19,7 @@ function love.load()
     font:setFilter("nearest", "nearest")
     love.graphics.setFont(font)
 
-    CurrentGameData.saveData = SaveFileModule.load()
+    GameData.saveData = SaveFileModule.load()
 
     SoundModule.load()
     UIModule.loadScene("splashscreen", true)
@@ -29,11 +29,13 @@ function love.update(deltaTime)
     UIModule.update(deltaTime)
     SoundModule.update()
 
-    if not CurrentGameData.gameStarted then return end
+    if not GameData.gameStarted then return end
 
-    GameplayLoopModule.update(deltaTime)
-    EnemyModule.updateAll(deltaTime)
-    UnitModule.updateAll(deltaTime)
+    local scaledDeltaTime = deltaTime * GameData.timeScale
+
+    GameplayLoopModule.update(scaledDeltaTime)
+    EnemyModule.updateAll(scaledDeltaTime)
+    UnitModule.updateAll(scaledDeltaTime)
 end
 
 function love.draw()
@@ -41,8 +43,8 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    if CurrentGameData.gameStarted then
-        for index, unit in pairs(CurrentGameData.saveData.loadout) do
+    if GameData.gameStarted then
+        for index, unit in pairs(GameData.saveData.loadout) do
             if tonumber(key) == index then
                 UIModule.startPlacement(unit)
             end
@@ -63,6 +65,6 @@ function love.mousepressed(_, _, button)
 end
 
 function love.quit()
-    SaveFileModule.save(CurrentGameData.saveData)
+    SaveFileModule.save(GameData.saveData)
     love.window.setFullscreen(false)
 end

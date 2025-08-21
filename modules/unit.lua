@@ -1,4 +1,4 @@
-local CurrentGameData = require("modules.currentGameData")
+local GameData = require("modules.data.gameData")
 local RenderModule = require("modules.render")
 local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
@@ -43,9 +43,9 @@ function Module:upgrade()
     if self.currentUpgrade == #self.data.upgrades then return end
 
     local nextData = self.data.upgrades[self.currentUpgrade + 1]
-    if CurrentGameData.cash < nextData.cost then return end
+    if GameData.cash < nextData.cost then return end
 
-    CurrentGameData.cash = CurrentGameData.cash - nextData.cost
+    GameData.cash = GameData.cash - nextData.cost
 
     self.currentUpgrade = self.currentUpgrade + 1
 
@@ -72,8 +72,8 @@ function Module:upgrade()
 end
 
 function Module:sell()
-    if not CurrentGameData.gameStarted then return end
-    CurrentGameData.cash = CurrentGameData.cash + self.sellPrice
+    if not GameData.gameStarted then return end
+    GameData.cash = GameData.cash + self.sellPrice
 
     SoundModule.playSound("moneygain.wav", 1, true)
 
@@ -84,20 +84,48 @@ function Module:update()
     local currentData = self.data.upgrades[self.currentUpgrade]
 
     local enemyInRange = findEnemyInRange(self, currentData.range)
-    if enemyInRange then
+    if enemyInRange and os.clock() - self.lastAttack >= currentData.cooldown / GameData.timeScale and not self.stunned then
         local dx = enemyInRange.element.x - self.element.x
         local dy = enemyInRange.element.y - self.element.y
 
         ---@diagnostic disable-next-line: deprecated
-        local angle = math.atan2(dy, dx)
+        local targetAngle = math.atan2(dy, dx)
 
-        if os.clock() - self.lastAttack >= currentData.cooldown then
+        local currentRotation = self.element.rot or 0
+        local angleDiff = targetAngle - currentRotation
+
+        angleDiff = (angleDiff + math.pi) % (2 * math.pi) - math.pi
+
+        if math.abs(angleDiff) > 0.01 then
+            local maxRotation = currentData.turnSpeed * love.timer.getDelta() * GameData.timeScale
+            local rotationAmount = math.min(math.abs(angleDiff), maxRotation)
+            self.element.rot = currentRotation + rotationAmount * extra.sign(angleDiff)
+        else
+            self.element.rot = targetAngle
+        end
+
+        if math.abs(angleDiff) <= currentData.attackThreshold then
             SoundModule.playSound(currentData.soundName, .3, true)
-            CurrentGameData.cash = CurrentGameData.cash + 1
+            GameData.cash = GameData.cash + 1
 
             enemyInRange:takeDamage(currentData.damage)
+
+            if currentData.hasSplashDamage then
+                local splashDamage = math.floor(currentData.damage * (currentData.splashDamageRatio or 0.5))
+                for _, otherEnemy in pairs(EnemyModule.getEnemies()) do
+                    if otherEnemy ~= enemyInRange and otherEnemy.element and otherEnemy.data.health > 0 then
+                        local sdx = otherEnemy.element.x - enemyInRange.element.x
+                        local sdy = otherEnemy.element.y - enemyInRange.element.y
+                        local dist = math.sqrt(sdx * sdx + sdy * sdy)
+
+                        if dist <= currentData.splashRadius then
+                            otherEnemy:takeDamage(splashDamage)
+                        end
+                    end
+                end
+            end
+
             self.lastAttack = os.clock()
-            self.element.rot = angle
         end
     end
 end
@@ -124,9 +152,9 @@ return {
         if not love.filesystem.getInfo(path) then return end
 
         local data = extra.deepCopy(require(pathModule))
-        if CurrentGameData.cash < data.upgrades[1].cost then return end
+        if GameData.cash < data.upgrades[1].cost then return end
 
-        CurrentGameData.cash = CurrentGameData.cash - data.upgrades[1].cost
+        GameData.cash = GameData.cash - data.upgrades[1].cost
 
         UnitIdCounter = UnitIdCounter + 1
 
@@ -147,6 +175,7 @@ return {
 
         newUnit.currentUpgrade = 1
         newUnit.lastAttack = 0
+        newUnit.stunned = false
 
         Units[UnitIdCounter] = newUnit
 

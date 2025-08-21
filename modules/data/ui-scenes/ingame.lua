@@ -36,6 +36,17 @@ return {
             scaleX = .6,
             scaleY = .6
         },
+
+        ["timeScale"] = {
+            color = {r = 255, g = 255, b = 255},
+            type = "text",
+            text = "Time Scale: 1",
+            x = 700,
+            y = 550,
+            zindex = 101,
+            scaleX = .6,
+            scaleY = .6
+        },
         ["enemyNameDisplay"] = {
             color = {r=255, g=255, b=255},
             type = "text",

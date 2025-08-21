@@ -1,4 +1,4 @@
-local CurrentGameData = require("modules.currentGameData")
+local GameData = require("modules.data.gameData")
 local SoundModule = require("modules.sound")
 local EnemyModule = require("modules.enemy")
 local UnitModule = require("modules.unit")
@@ -13,7 +13,7 @@ local function waitSeconds(seconds, updateWaveTimer)
     local timer = 0
     local lastTick = seconds + 1
 
-    if updateWaveTimer then CurrentGameData.waveTimer = math.ceil(seconds) end
+    if updateWaveTimer then GameData.waveTimer = math.ceil(seconds) end
 
     while timer < seconds do
         local deltaTime = coroutine.yield()
@@ -23,7 +23,7 @@ local function waitSeconds(seconds, updateWaveTimer)
 
         if updateWaveTimer then
             local waveTimer = math.ceil(seconds - timer)
-            CurrentGameData.waveTimer = math.max(0, waveTimer)
+            GameData.waveTimer = math.max(0, waveTimer)
 
             if waveTimer < lastTick then
                 SoundModule.playSound("tick.wav", 1, true)
@@ -32,11 +32,11 @@ local function waitSeconds(seconds, updateWaveTimer)
         end
     end
 
-    if updateWaveTimer then CurrentGameData.waveTimer = nil end
+    if updateWaveTimer then GameData.waveTimer = nil end
 end
 
 function Module.startGame(difficulty, map)
-    if CurrentGameData.gameStarted then Module.stopGame() end
+    if GameData.gameStarted then Module.stopGame() end
 
     local modulePath = "modules.data.difficulties." .. difficulty
     local path = "modules/data/difficulties/" .. difficulty .. ".lua"
@@ -46,24 +46,28 @@ function Module.startGame(difficulty, map)
     UIModule.loadScene("ingame", true)
 
     local difficultyData = require(modulePath)
-    CurrentGameData.waves = difficultyData.waves or {}
+    GameData.waves = difficultyData.waves or {}
 
-    CurrentGameData.gameStarted = true
-    CurrentGameData.gameWon = false
-    CurrentGameData.waveTimer = nil
+    GameData.gameStarted = true
+    GameData.gameWon = false
+    GameData.waveTimer = nil
 
-    CurrentGameData.maxBaseHealth = 1500
-    CurrentGameData.baseHealth = CurrentGameData.maxBaseHealth
-    CurrentGameData.currentWave = 0
-    CurrentGameData.cash = 800
+    GameData.maxBaseHealth = 1500
+    GameData.baseHealth = GameData.maxBaseHealth
+    GameData.currentWave = 0
+    GameData.cash = 800
 
     MapModule.load(map)
 
     waveCoroutine = coroutine.create(function()
-        waitSeconds(15, true)
+        while UIModule.transitioning do
+            waitSeconds(0.01, false)
+        end
 
-        for index, wave in ipairs(CurrentGameData.waves) do
-            CurrentGameData.currentWave = index
+        waitSeconds(1, true)
+
+        for index, wave in ipairs(GameData.waves) do
+            GameData.currentWave = index
 
             for _, enemyGroup in ipairs(wave.enemies) do
                 for _ = 1, enemyGroup.count do
@@ -76,16 +80,16 @@ function Module.startGame(difficulty, map)
                 waitSeconds(0.1, false)
             end
 
-            if #CurrentGameData.waves ~= index then
+            if #GameData.waves ~= index then
                 SoundModule.playSound("moneygain.wav", 1, true)
-                CurrentGameData.cash = CurrentGameData.cash + (index * 50)
+                GameData.cash = GameData.cash + (index * 100)
 
                 waitSeconds(5, true)
             end
         end
 
         SoundModule.playSound("victory.wav", 0.5, false)
-        CurrentGameData.gameWon = true
+        GameData.gameWon = true
         Module.stopGame()
     end)
 
@@ -93,8 +97,8 @@ function Module.startGame(difficulty, map)
 end
 
 function Module.update(dt)
-    if CurrentGameData.gameStarted then
-        if CurrentGameData.baseHealth <= 0 then
+    if GameData.gameStarted then
+        if GameData.baseHealth <= 0 then
             Module.stopGame()
             return
         end
@@ -109,9 +113,9 @@ function Module.stopGame()
     EnemyModule:clearAll()
     UnitModule:clearAll()
 
-    CurrentGameData.gameStarted = false
-    CurrentGameData.waveTimer = nil
-    CurrentGameData.waves = nil
+    GameData.gameStarted = false
+    GameData.waveTimer = nil
+    GameData.waves = nil
 
     waveCoroutine = nil
 
