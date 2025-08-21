@@ -13,7 +13,8 @@ Sound Effects:
  - [splashintro.wav](https://freesound.org/people/nikerk/sounds/764513/) <br>
  - [victory.wav](https://www.youtube.com/watch?v=wO9q4H49cGA) <br>
  - [placementError.wav](https://freesound.org/people/distillerystudio/sounds/327738/) <br>
- - [buttonHover.wav](https://freesound.org/people/florianreichelt/sounds/683101/)
+ - [buttonHover.wav](https://freesound.org/people/florianreichelt/sounds/683101/) <br>
+ - [splitSlime.wav](https://freesound.org/people/Breviceps/sounds/445109/) <br>
  
 Music:
  - [mainmenu.ogg](https://freesound.org/people/Xythe/sounds/516912/) <br>
