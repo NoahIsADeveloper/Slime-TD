@@ -18,22 +18,22 @@ local function findEnemyInRange(unit, range)
     local currentData = unit.data.upgrades[unit.currentUpgrade]
 
     for _, enemy in pairs(EnemyModule.getEnemies()) do
-        if enemy.element and enemy.data.health > 0 then
-            if not (enemy.data.hidden and not currentData.hiddenDetection) then
-                local dx = enemy.element.x - unit.element.x
-                local dy = enemy.element.y - unit.element.y
-                local dist = math.sqrt(dx * dx + dy * dy)
+        if not enemy.element or enemy.data.health < 0 then goto continue end
+        if enemy.data.hidden and not currentData.hiddenDetection then goto continue end
 
-                if dist <= range then
-                    local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
+        local dx = enemy.element.x - unit.element.x
+        local dy = enemy.element.y - unit.element.y
+        local dist = math.sqrt(dx * dx + dy * dy)
+        if dist > range then goto continue end
+        
+        local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
 
-                    if progress > farthestProgress then
-                       farthestProgress = progress
-                       farthestEnemy = enemy
-                    end
-                end
-            end
-        end
+        if progress < farthestProgress then goto continue end
+
+        farthestProgress = progress
+        farthestEnemy = enemy
+
+        ::continue::
     end
 
     return farthestEnemy
@@ -82,6 +82,7 @@ end
 
 function Module:update()
     local currentData = self.data.upgrades[self.currentUpgrade]
+    if os.clock() - self.lastAttack < currentData.cooldown then return end
 
     local enemyInRange = findEnemyInRange(self, currentData.range)
     if enemyInRange and os.clock() - self.lastAttack >= currentData.cooldown / GameData.timeScale and not self.stunned then

@@ -3,22 +3,12 @@
   A tower defense game created in LOVE2D where you defend your base against waves of slimes.
 </p>
 
-## Special Credits
-Font: [Pixel Operator](https://www.dafont.com/pixel-operator.font) (Bold) - Jayvee Enaguas <br>
-Sound Effects: <br>
- - [click.wav](https://freesound.org/people/BiORNADE/sounds/735803/) <br>
- - [hit.wav](https://freesound.org/people/DmitryKutin0/sounds/806263/) <br>
- - [turretshoot.wav](https://freesound.org/people/eardeer/sounds/402009/) <br>
- - [hyperturretshoot.wav](https://freesound.org/people/hotpin7/sounds/819269/) <br>
- - [moneygain.wav](https://freesound.org/people/LittleRobotSoundFactory/sounds/276106/) <br>
- - [tick.wav](https://freesound.org/people/KorgMS2000B/sounds/54406/) <br>
- - [splashintro.wav](https://freesound.org/people/nikerk/sounds/764513/) <br>
-Music: <br>
- - [mainmenu.wav](https://freesound.org/people/Xythe/sounds/516912/) <br>
+## Credits
+Read [CREDITS.md](CREDITS.md)
 
 ## Official Links
-https://github.com/ShibaTheDeveloper/Slime-TD/releases <br>
-https://shibathedeveloper.itch.io/slime-td
+[Github Releases](https://github.com/ShibaTheDeveloper/Slime-TD/releases) <br>
+[Itch.io](https://shibathedeveloper.itch.io/slime-td)
 
 ## Development Setup (Windows Only)
 **Note:** If you just want to play the game, use the official links above.
@@ -42,7 +32,7 @@ https://shibathedeveloper.itch.io/slime-td
 6. Copy `love.exe` into the same folder.
 7. Open Command Prompt with administrator permissions.
 8. Run the following command (replace `SlimeTD` with your `.love` file name):
-   `copy /b love.exe+SlimeTD.love SlimeTD.exe`
+   `copy /b love.exe+SlimeTD.love play.exe`
 9. Copy all DLLs that came with `love.exe` into the same folder.
 
 ## Troubleshooting Build
