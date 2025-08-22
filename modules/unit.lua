@@ -25,7 +25,7 @@ local function findEnemyInRange(unit, range)
         local dy = enemy.element.y - unit.element.y
         local dist = math.sqrt(dx * dx + dy * dy)
         if dist > range then goto continue end
-        
+
         local progress = (enemy.data.currentWaypoint or 0) + (enemy.data.t or 0)
 
         if progress < farthestProgress then goto continue end
@@ -46,7 +46,6 @@ function Module:upgrade()
     if GameData.cash < nextData.cost then return end
 
     GameData.cash = GameData.cash - nextData.cost
-
     self.currentUpgrade = self.currentUpgrade + 1
 
     local currentData = self.data.upgrades[self.currentUpgrade]

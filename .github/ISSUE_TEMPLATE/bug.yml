@@ -34,7 +34,7 @@ body:
     id: version
     attributes:
       label: Build Version
-      placeholder: e.g. 'v1.1.2-dev' # What ever you have your releases names as
+      placeholder: e.g. 'v1.1.2-dev'
     validations:
       required: true
   - type: checkboxes
