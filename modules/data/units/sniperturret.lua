@@ -16,7 +16,7 @@ return {
             hiddenDetection = true,
         },
         [2] = {
-            upgradeName = "Lubricated Gears",
+            upgradeName = "Faster Motors",
             spritePath = "assets/sprites/unit_sniperturret_2.png",
             soundName = "snipershoot.wav",
             cooldown = 3.5,

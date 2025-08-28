@@ -30,7 +30,7 @@ return {
         ["cashCounter"] = {
             color = {r = 255, g = 200, b = 0},
             type = "text",
-            x = 120,
+            x = 140,
             y = 550,
             zindex = 101,
             scaleX = .6,
@@ -110,5 +110,18 @@ return {
             x = 400,
             y = 500
         },
+
+        ["loadoutBackground"] = {
+            color = {r=42,g=42,b=42},
+            alpha = 0.9,
+            type = "sprite",
+            spritePath = "assets/sprites/button.png",
+            rot = math.rad(90),
+            scaleX = 0.8,
+            scaleY = 0.9,
+            x = 60,
+            y = 425,
+            zindex = 103,
+        }
     }
 }

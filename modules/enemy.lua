@@ -60,10 +60,14 @@ function Module:takeDamage(damage)
 
             for _, split in pairs(splitsInto) do
                 for _ = 1, split.amount do
-                    local newSplit = returnFunctions.new(split.type, split.hidden)
+                    local newSplit = ReturnFunctions.new(split.type, split.hidden)
+
+                    ---@diagnostic disable-next-line: need-check-nil
                     newSplit.data.currentWaypoint = self.data.currentWaypoint
 
                     local variation = (math.random() * 0.2) - 0.1
+
+                    ---@diagnostic disable-next-line: need-check-nil
                     newSplit.data.t = math.max(0, math.min(1, self.data.t + variation))
                 end
             end
@@ -205,7 +209,7 @@ function Module:remove()
     self = nil
 end
 
-returnFunctions = {
+ReturnFunctions = {
     new = function(enemyType, hidden)
         local pathModule = "modules.data.enemies." .. enemyType
         local path = "modules/data/enemies/" .. enemyType .. ".lua"
@@ -274,4 +278,4 @@ returnFunctions = {
     end
 }
 
-return returnFunctions
+return ReturnFunctions
