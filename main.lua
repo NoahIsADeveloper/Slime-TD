@@ -44,11 +44,9 @@ end
 
 function love.keypressed(key)
     if GameData.gameStarted then
-        for index, unit in pairs(GameData.saveData.loadout) do
-            if tonumber(key) == index then goto continue end
-            UIModule.startPlacement(unit)
-
-            :: continue ::
+        local index = tonumber(key)
+        if index and GameData.saveData.loadout[index] then
+            UIModule.startPlacement(GameData.saveData.loadout[index])
         end
     end
 
