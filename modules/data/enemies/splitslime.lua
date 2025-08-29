@@ -8,7 +8,7 @@ return {
     damageReduction = 0,
 
     splitsInto = {
-        {type = "minislime", amount = 3, hidden = false}
+        {type = "minislime", amount = 2, hidden = false}
     },
     splitSound = "splitslime.wav"
 }

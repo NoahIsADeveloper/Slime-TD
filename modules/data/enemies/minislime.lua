@@ -1,6 +1,6 @@
 return {
     displayName = "Mini Slime",
-    type = "unit_basicturret_3",
+    type = "Splitter",
     spritePath = "assets/sprites/enemy_minislime.png",
     killReward = 25,
     maxHealth = 200,
